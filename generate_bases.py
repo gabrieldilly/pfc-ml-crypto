@@ -3,6 +3,7 @@
 from nltk.corpus import reuters 
 from binascii import hexlify
 from Crypto.Random import get_random_bytes
+import time
 
 #%%
 documents = reuters.fileids()
@@ -41,10 +42,14 @@ plaintext = b'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
 msg = cipher.encrypt(plaintext)
 print(hexlify(msg))
 
+start_time = time.time()
+
 bases['DES']['encrypted_documents'] = []
 for text in bases['DES']['documents']:
     bases['DES']['encrypted_documents'].append(hexlify(cipher.encrypt(bytes(text, encoding = 'utf-8'))).decode())
 bases['DES']['encrypted_text'] = ''.join(bases['DES']['encrypted_documents'])
+
+print(f'Finished. DES elapsed time: {time.time() - start_time}')
 
 #%%
 # RSA
@@ -84,6 +89,18 @@ decrypt = PKCS1_OAEP.new(key = pr_key)
 decrypted_message = decrypt.decrypt(cipher_text)
 print(decrypted_message)
 
+start_time = time.time()
+
+block_size = 8 # bytes
+bases['RSA']['encrypted_documents'] = []
+for text in bases['RSA']['documents']:
+    text = bytes(text, encoding = 'utf-8')
+    blocks = [cipher.encrypt(text[i:i+block_size]) for i in range(0, len(text), block_size)]
+    bases['RSA']['encrypted_documents'].append(''.join([hexlify(b).decode() for b in blocks]))
+bases['RSA']['encrypted_text'] = ''.join(bases['RSA']['encrypted_documents'])
+
+str_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
+print(f'Finished. RSA elapsed time: {str_time}')
 
 #%%
 # ElGamal
