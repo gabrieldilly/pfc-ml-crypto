@@ -41,6 +41,11 @@ plaintext = b'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
 msg = cipher.encrypt(plaintext)
 print(hexlify(msg))
 
+bases['DES']['encrypted_documents'] = []
+for text in bases['DES']['documents']:
+    bases['DES']['encrypted_documents'].append(hexlify(cipher.encrypt(bytes(text, encoding = 'utf-8'))).decode())
+bases['DES']['encrypted_text'] = ''.join(bases['DES']['encrypted_documents'])
+
 #%%
 # RSA
 
