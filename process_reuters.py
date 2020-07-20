@@ -3,7 +3,7 @@ nltk.download('reuters')
 
 #%%
 from nltk.corpus import reuters 
- 
+
 def collection_stats():
     # List of documents
     documents = reuters.fileids()
