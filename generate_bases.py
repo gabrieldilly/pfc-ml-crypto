@@ -170,12 +170,21 @@ print(f'Finished. RSA elapsed time: {str_time}')
 #%%
 # ElGamal
 
+from .elgamal import ElGamal
+
+el = ElGamal()
+message = 'Public and '
+encrypted = el.encrypt(message)
+el.decrypt(encrypted[0], encrypted[1])
+
+
+from Crypto import Random
 from Crypto.PublicKey import ElGamal
 from Crypto.Util.number import GCD
 from Crypto.Hash import SHA
 
 message = b'Public and Private keys encryption'
-private_key = ElGamal.generate(2048, 5)
+private_key = ElGamal.generate(256, Random.new().read)
 public_key = private_key.publickey()
    
 
