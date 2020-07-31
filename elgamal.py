@@ -49,10 +49,12 @@ class ElGamal(object):
         for i in range(0, len(msg)):
             en_msg.append(msg[i])
 
-        print("g^k used : ", p)
-        print("g^ak used : ", s)
+        #print("g^k used : ", p)
+        #print("g^ak used : ", s)
         for i in range(0, len(en_msg)):
             en_msg[i] = s * ord(en_msg[i])
+
+        print("encrypted")
 
         return en_msg, p
 
