@@ -39,11 +39,10 @@ for f in onlyfiles:
 
 print(f'Finished. Elapsed time: {time.time() - start_time}')
 
-
 #%%
 # Angulo Cosseno
 
-df = pd.DataFrame(index=[f for f in onlyfiles], columns=[f for f in onlyfiles])
+df = {n: pd.DataFrame(index=[f for f in onlyfiles], columns=[f for f in onlyfiles]) for n in block_size}
 
 for f1 in onlyfiles:
     for f2 in onlyfiles: 
@@ -64,6 +63,6 @@ start_time = time.time()
 for n in block_size:
     for f1, u in vector_space[n].items():
         for f2, v in vector_space[n].items():
-            df[f1][f2] = cos(u,v)
+            df[n][f1][f2] = cos(u,v)
 
 print(f'Finished. Cos Elapsed time: {time.time() - start_time}')
