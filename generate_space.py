@@ -21,10 +21,11 @@ start_time = time.time()
 for f in onlyfiles:
     with open(mypath + "\\" + f, 'r') as file:
         data = file.read().replace('\n', '')
-        for n in block_size:			   
+        for n in block_size:
             for i in range(0, len(data), n):
-                if data[i:min(i+n,len(data))] not in complete_dict[n] and len(data[i:min(i+n,len(data))])>=n:
+                if data[i:min(i+n,len(data))] not in complete_dict[n] and len(data[i:min(i+n,len(data))])==n:
                     complete_dict[n].append(data[i:min(i+n,len(data))])
+                if data[i:min(i+n,len(data))] not in partial_dict[n][f] and len(data[i:min(i+n,len(data))])==n:
                     partial_dict[n][f].append(data[i:min(i+n,len(data))])
     print("file completed")
 	
@@ -34,9 +35,10 @@ for f in onlyfiles:
     for n in block_size:
         for b in complete_dict[n]:
             if b in partial_dict[n][f]:
-                vector_space[n][f][complete_dict[n].find(b)] = 1
+                vector_space[n][f][complete_dict[n].index(b)] = 1
 
 print(f'Finished. Elapsed time: {time.time() - start_time}')
+
 
 #%%
 # Angulo Cosseno
@@ -48,12 +50,12 @@ for f1 in onlyfiles:
         df[f1][f2] = 0
 		
 def cos(u,v):
-    u = np.array(u)   
+    u = np.array(u)
     v = np.array(v)
     
     n1 = np.linalg.norm(u)
     n2 = np.linalg.norm(v)
-    d = np.linalg.inner(u,v)
+    d = np.inner(u,v)
     
     return d/(np.sqrt(n1*n2))
 
