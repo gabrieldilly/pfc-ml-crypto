@@ -2,12 +2,17 @@ from os import listdir
 from os.path import isfile, join, isdir
 from shutil import copyfile, copytree, rmtree
 import time
+import pandas as pd
+import numpy as np
+
+#%%
+#Generating vectors
 
 mypath = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\encrypted_documents"
 
 onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
-block_size = [4] #2,4
+block_size = [2,4]
 complete_dict = {n: [] for n in block_size}
 partial_dict = {n: {f: [] for f in onlyfiles} for n in block_size}
 
@@ -28,10 +33,35 @@ vector_space = {n: {f: [0]*len(complete_dict[n]) for f in onlyfiles} for n in bl
 for f in onlyfiles:
     for n in block_size:
         for b in complete_dict[n]:
-            if b in partial_dict[f]:
+            if b in partial_dict[n][f]:
                 vector_space[n][f][complete_dict[n].find(b)] = 1
 
 print(f'Finished. Elapsed time: {time.time() - start_time}')
 
 #%%
 # Angulo Cosseno
+
+df = pd.DataFrame(index=[f for f in onlyfiles], columns=[f for f in onlyfiles])
+
+for f1 in onlyfiles:
+    for f2 in onlyfiles: 
+        df[f1][f2] = 0
+		
+def cos(u,v):
+    u = np.array(u)   
+    v = np.array(v)
+    
+    n1 = np.linalg.norm(u)
+    n2 = np.linalg.norm(v)
+    d = np.linalg.inner(u,v)
+    
+    return d/(np.sqrt(n1*n2))
+
+start_time = time.time()
+
+for n in block_size:
+    for f1, u in vector_space[n].items():
+        for f2, v in vector_space[n].items():
+            df[f1][f2] = cos(u,v)
+
+print(f'Finished. Cos Elapsed time: {time.time() - start_time}')

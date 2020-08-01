@@ -179,7 +179,7 @@ el = ElGamal()
 
 start_time = time.time()
 
-for document in train_base['ElGamal']:  
+for document in train_base['ElGamal']:
     b=''
     encrypted_msg,p = el.encrypt(document)
     for c in encrypted_msg:
