@@ -10,6 +10,10 @@ class ElGamal(object):
         self.key = self.gen_key(self.q) # Private key for receiver 
         self.h = self.power(self.g, self.key, self.q) 
 
+        self.k = self.gen_key(self.q) # Private key for sender
+        self.s = self.power(self.h, self.k, self.q)
+        self.p = self.power(self.g, self.k, self.q)
+
     def gcd(self, a, b):
         if a < b:
             return self.gcd(b, a)
@@ -42,21 +46,15 @@ class ElGamal(object):
     def encrypt(self, msg):
         en_msg = []
 
-        k = self.gen_key(self.q) # Private key for sender
-        s = self.power(self.h, k, self.q)
-        p = self.power(self.g, k, self.q)
-
         for i in range(0, len(msg)):
             en_msg.append(msg[i])
 
         #print("g^k used : ", p)
         #print("g^ak used : ", s)
         for i in range(0, len(en_msg)):
-            en_msg[i] = s * ord(en_msg[i])
+            en_msg[i] = self.s * ord(en_msg[i])
 
-        print("encrypted")
-
-        return en_msg, p
+        return en_msg
 
     # Asymmetric decryption
     def decrypt(self, en_msg, p):

@@ -57,7 +57,7 @@ def cos(u,v):
     n2 = np.linalg.norm(v)
     d = np.inner(u,v)
     
-    return d/(np.sqrt(n1*n2))
+    return d/(n1*n2)
 
 start_time = time.time()
 

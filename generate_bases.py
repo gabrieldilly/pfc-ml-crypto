@@ -181,23 +181,20 @@ start_time = time.time()
 
 for document in train_base['ElGamal']:
     b=''
-    encrypted_msg,p = el.encrypt(document)
-    for c in encrypted_msg:
+    for c in el.encrypt(document):
         b+=str(c)
     encrypted_base['ElGamal']['train'].append(hex(int(b)))
     print("document encrypted")	   
 	
 for document in train_base['ElGamal']:  
     b=''
-    encrypted_msg,p = el.encrypt(document)
-    for c in encrypted_msg:
+    for c in el.encrypt(document):
         b+=str(c)
     encrypted_base['ElGamal']['test'].append(hex(int(b)))
 	
 for document in train_base['ElGamal']:  
     b=''
-    encrypted_msg,p = el.encrypt(document)
-    for c in encrypted_msg:
+    for c in el.encrypt(document):
         b+=str(c)
     encrypted_base['ElGamal']['validation'].append(hex(int(b)))	
 
