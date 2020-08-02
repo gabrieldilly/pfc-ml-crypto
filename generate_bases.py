@@ -180,23 +180,13 @@ el = ElGamal()
 start_time = time.time()
 
 for document in train_base['ElGamal']:
-    b=''
-    for c in el.encrypt(document):
-        b+=str(c)
-    encrypted_base['ElGamal']['train'].append(hex(int(b)))
-    print("document encrypted")	   
+    encrypted_base['ElGamal']['train'].append(el.encrypt(document))
 	
-for document in train_base['ElGamal']:  
-    b=''
-    for c in el.encrypt(document):
-        b+=str(c)
-    encrypted_base['ElGamal']['test'].append(hex(int(b)))
+for document in test_base['ElGamal']:  
+    encrypted_base['ElGamal']['test'].append(el.encrypt(document))
 	
-for document in train_base['ElGamal']:  
-    b=''
-    for c in el.encrypt(document):
-        b+=str(c)
-    encrypted_base['ElGamal']['validation'].append(hex(int(b)))	
+for document in validation_base['ElGamal']:
+    encrypted_base['ElGamal']['validation'].append(el.encrypt(document))
 
 i=1
 for document in encrypted_base['ElGamal']['train']:

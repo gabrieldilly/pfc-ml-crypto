@@ -44,15 +44,10 @@ class ElGamal(object):
 
     # Asymmetric encryption
     def encrypt(self, msg):
-        en_msg = []
+        en_msg = ''
 
         for i in range(0, len(msg)):
-            en_msg.append(msg[i])
-
-        #print("g^k used : ", p)
-        #print("g^ak used : ", s)
-        for i in range(0, len(en_msg)):
-            en_msg[i] = self.s * ord(en_msg[i])
+            en_msg += str(hex(self.s * ord(msg[i]))[2:])
 
         return en_msg
 
