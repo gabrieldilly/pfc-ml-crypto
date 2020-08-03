@@ -12,11 +12,13 @@ path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\"
 
 onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 
-block_size = [8] # 4,8
+block_size = [8] #4,8
 complete_dict = {n: [] for n in block_size}
 partial_dict = {n: {f: [] for f in onlyfiles} for n in block_size}
 
 start_time = time.time()
+
+count = 1
 
 for f in onlyfiles:
     with open(path + "\\" + f, 'r') as file:
@@ -27,7 +29,8 @@ for f in onlyfiles:
                     complete_dict[n].append(data[i:min(i+n,len(data))])
                 if data[i:min(i+n,len(data))] not in partial_dict[n][f] and len(data[i:min(i+n,len(data))])==n:
                     partial_dict[n][f].append(data[i:min(i+n,len(data))])
-    print("file completed")
+    print(str(count) + " - file completed")
+    count+=1
 	
 vector_space = {n: {f: [0]*len(complete_dict[n]) for f in onlyfiles} for n in block_size}
                     
