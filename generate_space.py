@@ -44,8 +44,8 @@ for n in block_size:
     with open(path2 + "vector_space_" + str(n) + ".txt", "w") as text_file:
         for f in onlyfiles:
             for i in vector_space[n][f]:
-                print(str(i), file=text_file, end='')
-            print('\n', file=text_file, end='')  
+                print(f + ":" + str(i), file=text_file, end='')
+            print('\n', file=text_file, end='')
 
 print(f'Finished. Elapsed time: {time.time() - start_time}')
 
