@@ -12,7 +12,7 @@ path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\"
 
 onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 
-block_size = [8] #4,8
+block_size = [4,8] #4,8
 complete_dict = {n: [] for n in block_size}
 partial_dict = {n: {f: [] for f in onlyfiles} for n in block_size}
 
