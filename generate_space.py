@@ -1,17 +1,16 @@
 from os import listdir
-from os.path import isfile, join, isdir
-from shutil import copyfile, copytree, rmtree
+from os.path import isfile, join
 import time
 import pandas as pd
 import numpy as np
 
-mypath = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\encrypted_documents"
-mypath2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\"
+path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\encrypted_documents"
+path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\"
 
 #%%
 #Generating vectors
 
-onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 
 block_size = [8] # 4,8
 complete_dict = {n: [] for n in block_size}
@@ -20,7 +19,7 @@ partial_dict = {n: {f: [] for f in onlyfiles} for n in block_size}
 start_time = time.time()
 
 for f in onlyfiles:
-    with open(mypath + "\\" + f, 'r') as file:
+    with open(path + "\\" + f, 'r') as file:
         data = file.read().replace('\n', '')
         for n in block_size:
             for i in range(0, len(data), n):
@@ -39,7 +38,7 @@ for f in onlyfiles:
                 vector_space[n][f][complete_dict[n].index(b)] = 1
 
 for n in block_size:	 
-    with open(mypath2 + "vector_space_" + str(n) + ".txt", "w") as text_file:
+    with open(path2 + "vector_space_" + str(n) + ".txt", "w") as text_file:
         for f in onlyfiles:
             for i in vector_space[n][f]:
                 print(str(i), file=text_file, end='')
@@ -75,12 +74,12 @@ for n in block_size:
             df[n][f1][f2] = cos(u,v)
 
 for n in block_size:
-    df[n].to_csv(mypath2 + "Angulo_Cosseno_" + str(n) + ".csv", sep = ';')
+    df[n].to_csv(path2 + "Angulo_Cosseno_" + str(n) + ".csv", sep = ';')
 
 print(f'Finished. Cos Elapsed time: {time.time() - start_time}')
       				
 #%%
-# Distancia Euclidiana
+# Euclidian Distance
 
 df2 = {n: pd.DataFrame(index=[f for f in onlyfiles], columns=[f for f in onlyfiles]) for n in block_size}
 
@@ -99,6 +98,6 @@ for n in block_size:
             df2[n][f1][f2] = np.linalg.norm(u-v)
 
 for n in block_size:
-    df2[n].to_csv(mypath2 + "Distancia_Euclidiana_" + str(n) + ".csv", sep = ';')
+    df2[n].to_csv(path2 + "Distancia_Euclidiana_" + str(n) + ".csv", sep = ';')
 	
 print(f'Finished. Euclidian Distance Elapsed time: {time.time() - start_time}')

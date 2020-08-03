@@ -1,21 +1,11 @@
-# import nltk
-# nltk.download('reuters')
-from nltk.corpus import reuters 
 from binascii import hexlify
 from Crypto.Random import get_random_bytes
 import time
+from os import listdir
+from os.path import isfile, join
 
 path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\encrypted_documents"
-
-#%%
-documents = reuters.fileids()
-print(str(len(documents)) + ' documents')
-
-train_docs = list(filter(lambda doc: doc.startswith('train'), documents))
-print(str(len(train_docs)) + ' total train documents')
-
-test_docs = list(filter(lambda doc: doc.startswith('test'), documents))
-print(str(len(test_docs)) + ' total test documents')
+path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\Base"
 
 #%%
 algorithms = ['DES', 'RSA', 'ElGamal']
@@ -26,15 +16,12 @@ test_base = {k: [] for k in algorithms}
 validation_base = {k: [] for k in algorithms}
 encrypted_base = {k: {'train': [], 'test': [], 'validation': []} for k in algorithms}
 
-for i in range(len(train_docs)):
-    text = reuters.raw(train_docs[i])
-    text += ' ' * ((- len(text)) % 8)
-    total_texts+=text
-	
-for i in range(len(test_docs)):
-    text = reuters.raw(test_docs[i])
-    text += ' ' * ((- len(text)) % 8)
-    total_texts+=text
+onlyfiles = [f for f in listdir(path2) if isfile(join(path2, f))]
+
+for f in onlyfiles:
+    with open(path2 + "\\" + f, 'r') as file:
+        data = file.read().replace('\n', '')
+        total_texts+=data
 
 n = 300000
    
@@ -46,12 +33,12 @@ j = 0
 ## 60% train - 20% test - 20% validation
 for k in algorithms:
     for t in range(j,j+6):
-        train_base[k].append(total_base[t])
-    for t in range(j+6, j+8):
-        test_base[k].append(total_base[t])
-    for t in range(j+8,j+10):
         validation_base[k].append(total_base[t])
-    j+=10
+    for t in range(j+6, j+12):
+        test_base[k].append(total_base[t])
+    for t in range(j+12,j+30):
+        train_base[k].append(total_base[t])
+    j+=30
 
 for b in train_base:
 	print('\n' + b + ' Train Base has ' + str(len(train_base[b])) + " documents")
