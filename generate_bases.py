@@ -139,7 +139,7 @@ for document in validation_base['RSA']:
 i=1
 for document in encrypted_base['RSA']['train']:
     with open(path + "\\RSA_train_doc_" + str(i) + ".txt", "w") as text_file:
-	    print(document, file=text_file)	
+	    print(document, file=text_file)
     i+=1
 
 i=1
