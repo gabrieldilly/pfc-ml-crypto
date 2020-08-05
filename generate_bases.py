@@ -4,8 +4,8 @@ import time
 from os import listdir
 from os.path import isfile, join
 
-path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\encrypted_documents"
-path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\Base"
+path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Base"
 
 #%%
 algorithms = ['DES', 'RSA', 'ElGamal']

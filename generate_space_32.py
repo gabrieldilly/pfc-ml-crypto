@@ -4,8 +4,8 @@ import time
 import pandas as pd
 import numpy as np
 
-path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\encrypted_documents"
-path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\pfc-ml-crypto\\"
+path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\"
 
 #%%
 #Generating vectors
