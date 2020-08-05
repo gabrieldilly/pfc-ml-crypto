@@ -1,15 +1,15 @@
 import random
-from math import pow
+from math import pow, sqrt
+from itertools import count, islice
 
 class ElGamal(object):
         
     def __init__(self):
-        self.q = random.randint(pow(10, 20), pow(10, 50)) 
-        self.g = random.randint(2, self.q) 
-    
-        self.key = self.gen_key(self.q) # Private key for receiver 
-        self.h = self.power(self.g, self.key, self.q) 
 
+        self.q = random.randint(pow(10, 70), pow(10, 80))        
+        self.g = random.randint(2, self.q)       
+        self.key = self.gen_key(self.q) # Private key for receiver 
+        self.h = self.power(self.g, self.key, self.q)
         self.k = self.gen_key(self.q) # Private key for sender
         self.s = self.power(self.h, self.k, self.q)
         self.p = self.power(self.g, self.k, self.q)
@@ -45,9 +45,14 @@ class ElGamal(object):
     # Asymmetric encryption
     def encrypt(self, msg):
         en_msg = ''
-
-        for i in range(0, len(msg)):
-            en_msg += str(hex(self.s * ord(msg[i]))[2:])
+                
+#        for i in range(0, len(msg)):
+        for i in range(0, len(msg),64):
+            aux = ''
+            for j in range(i,min(i+64,len(msg))):
+                aux+=str(ord(msg[j]))		
+#            en_msg += str(hex(self.s * ord(msg[i]))[2:])
+            en_msg += str(hex(self.s *int(aux)))[2:]
 
         return en_msg
 

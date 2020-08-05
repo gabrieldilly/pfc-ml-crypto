@@ -63,15 +63,18 @@ start_time = time.time()
 for document in train_base['DES']:
     document = bytes(document, encoding = 'utf-8')
     encrypted_base['DES']['train'].append(hexlify(cipher.encrypt(document)).decode())
-
+    print("document encrypted")
+	
 for document in test_base['DES']:
     document = bytes(document, encoding = 'utf-8')
     encrypted_base['DES']['test'].append(hexlify(cipher.encrypt(document)).decode())
+    print("document encrypted")
 	
 for document in validation_base['DES']:
     document = bytes(document, encoding = 'utf-8')
     encrypted_base['DES']['validation'].append(hexlify(cipher.encrypt(document)).decode())
-
+    print("document encrypted")
+	
 i=1
 for document in encrypted_base['DES']['train']:
     with open(path + "\\DES_train_doc_" + str(i) + ".txt", "w") as text_file:
@@ -120,22 +123,25 @@ cipher = PKCS1_OAEP.new(key = pu_key)
 
 start_time = time.time()
 
-block_size = 8 # bytes
+block_size = 64 # bytes
 for document in train_base['RSA']:
     document = bytes(document, encoding = 'utf-8')
     blocks = [cipher.encrypt(document[i:i+block_size]) for i in range(0, len(document), block_size)]
     encrypted_base['RSA']['train'].append(''.join([hexlify(b).decode() for b in blocks]))
-
+    print("document encrypted")
+	
 for document in test_base['RSA']:
     document = bytes(document, encoding = 'utf-8')
     blocks = [cipher.encrypt(document[i:i+block_size]) for i in range(0, len(document), block_size)]
     encrypted_base['RSA']['test'].append(''.join([hexlify(b).decode() for b in blocks]))
-
+    print("document encrypted")
+	
 for document in validation_base['RSA']:
     document = bytes(document, encoding = 'utf-8')
     blocks = [cipher.encrypt(document[i:i+block_size]) for i in range(0, len(document), block_size)]
     encrypted_base['RSA']['validation'].append(''.join([hexlify(b).decode() for b in blocks]))
-
+    print("document encrypted")
+	
 i=1
 for document in encrypted_base['RSA']['train']:
     with open(path + "\\RSA_train_doc_" + str(i) + ".txt", "w") as text_file:
@@ -168,13 +174,16 @@ start_time = time.time()
 
 for document in train_base['ElGamal']:
     encrypted_base['ElGamal']['train'].append(el.encrypt(document))
+    print("document encrypted")
 	
 for document in test_base['ElGamal']:  
     encrypted_base['ElGamal']['test'].append(el.encrypt(document))
+    print("document encrypted")
 	
 for document in validation_base['ElGamal']:
     encrypted_base['ElGamal']['validation'].append(el.encrypt(document))
-
+    print("document encrypted")
+	
 i=1
 for document in encrypted_base['ElGamal']['train']:
     with open(path + "\\ElGamal_train_doc_" + str(i) + ".txt", "w") as text_file:
@@ -195,5 +204,3 @@ for document in encrypted_base['ElGamal']['validation']:
 
 str_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
 print(f'Finished. ElGamal elapsed time: {str_time}')
-  
-

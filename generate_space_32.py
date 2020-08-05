@@ -24,7 +24,7 @@ for f in onlyfiles:
         for i in range(0, len(data), 8):
             if data[i:min(i+8,len(data))] not in vector_space[f] and len(data[i:min(i+8,len(data))])==8:
                 vector_space[f].append(data[i:min(i+8,len(data))])
-    print(str(count) + " - file completed")
+    print(str(count) + " - " + f + " completed")
     count+=1
 	
 with open(path2 + "vector_space_" + str(16) + ".txt", "w") as text_file:
@@ -38,6 +38,10 @@ print(f'Finished. Elapsed time: {time.time() - start_time}')
 #%%
 # Useful functions
 
+def norm(u):   
+
+    return np.sqrt(len(u))
+
 def inner(u,v):
     
     val = 0
@@ -48,10 +52,6 @@ def inner(u,v):
                 val+=1
 
     return val
-
-def norm(u):   
-
-    return np.sqrt(len(u))
 
 #%%
 # Angulo Cosseno
@@ -72,9 +72,14 @@ def cos(u,v):
 		
 start_time = time.time()
 
-for f1, u in vector_space.items():
-    for f2, v in vector_space.items():
-        df1[f1][f2] = cos(u,v)
+for f1 in [*vector_space]:
+    for f2 in [*vector_space][[*vector_space].index(f1):]:
+        if f1 == f2:
+            df1[f2][f1] = 1
+            print('cos(' + f1 + ', ' + f2 + ') finished')
+            continue
+        df1[f2][f1] = cos(vector_space[f1],vector_space[f2])
+        print('cos(' + f1 + ', ' + f2 + ') finished')
 
 df1.to_csv(path2 + "Angulo_Cosseno_" + str(32) + ".csv", sep = ';')
 
@@ -103,9 +108,14 @@ def euclidian_distance(u,v):
 		
     return norm(val)
 
-for f1, u in vector_space.items():
-    for f2, v in vector_space.items():
-        euclidian_distance(u,v)
+for f1 in [*vector_space]:
+    for f2 in [*vector_space][[*vector_space].index(f1):]:
+        if f1 == f2:
+            df2[f2][f1] = 1
+            print('cos(' + f1 + ', ' + f2 + ') finished')
+            continue
+        df2[f2][f1] = euclidian_distance(vector_space[f1],vector_space[f2])
+        print('euclidian_distance(' + f1 + ', ' + f2 + ') finished')
 
 df2.to_csv(path2 + "Distancia_Euclidiana_" + str(32) + ".csv", sep = ';')
 	
@@ -129,10 +139,24 @@ def dice(u,v):
 
 start_time = time.time()
 
-for f1, u in vector_space.items():
-    for f2, v in vector_space.items():
-        df3[f1][f2] = dice(u,v)
+for f1 in [*vector_space]:
+    for f2 in [*vector_space][[*vector_space].index(f1):]:
+        if f1 == f2:
+            df2[f2][f1] = 1
+            print('cos(' + f1 + ', ' + f2 + ') finished')
+            continue
+        df2[f2][f1] = dice(vector_space[f1],vector_space[f2])
+        print('dice(' + f1 + ', ' + f2 + ') finished')
 
 df3.to_csv(path2 + "Coeficiente_Dice_" + str(32) + ".csv", sep = ';')
 
 print(f'Finished. Dice Elapsed time: {time.time() - start_time}')
+
+#%%
+
+for f in onlyfiles:
+    count = 0
+    for i in range (0, len(vector_space[f])):
+        if vector_space[f][i] == 1:
+            count+=1
+    print(f + ': ' + str(count))
