@@ -22,7 +22,7 @@ for f in onlyfiles:
     with open(path + "\\" + f, 'r') as file:
         data = file.read().replace('\n', '')
         for i in range(0, len(data), 4):
-            vector_space[f][int(data[i:min(i+4,len(data))],16)] = 1
+            vector_space[f][int(data[i:min(i+4,len(data))],16)] += 1
     print(str(count) + " - " + f + " completed")
     count+=1
 	

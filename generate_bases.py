@@ -8,13 +8,10 @@ path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encr
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Base"
 
 #%%
-algorithms = ['DES', 'RSA', 'ElGamal']
+algorithms = ['RSA', 'DES', 'ElGamal']
 total_texts = ""
-total_base = []
-train_base = {k: [] for k in algorithms}
-test_base = {k: [] for k in algorithms}
-validation_base = {k: [] for k in algorithms}
-encrypted_base = {k: {'train': [], 'test': [], 'validation': []} for k in algorithms}
+total_base = {k: '' for k in algorithms}
+encrypted_base = {k: [] for k in algorithms}
 
 onlyfiles = [f for f in listdir(path2) if isfile(join(path2, f))]
 
@@ -23,31 +20,9 @@ for f in onlyfiles:
         data = file.read().replace('\n', '')
         total_texts+=data
 
-n = 300000
-   
-for i in range(0, len(total_texts), n):
-	total_base.append(total_texts[i:min(i+n,len(total_texts))])
-    
-j = 0
-
-## 60% train - 20% test - 20% validation
-for k in algorithms:
-    for t in range(j,j+6):
-        validation_base[k].append(total_base[t])
-    for t in range(j+6, j+12):
-        test_base[k].append(total_base[t])
-    for t in range(j+12,j+30):
-        train_base[k].append(total_base[t])
-    j+=30
-
-for b in train_base:
-	print('\n' + b + ' Train Base has ' + str(len(train_base[b])) + " documents")
-
-for b in test_base:
-	print('\n' + b + ' Test Base has ' + str(len(test_base[b])) + " documents")
-	
-for b in validation_base:
-	print('\n' + b + ' Validation Base has ' + str(len(validation_base[b])) + " documents")
+total_base['DES']+=(total_texts[0:int(len(total_texts)/3)-1])
+total_base['RSA']+=(total_texts[int(len(total_texts)/3):2*int(len(total_texts)/3)-1])
+total_base['ElGamal']+=(total_texts[2*int(len(total_texts)/3):len(total_texts)])
 
 #%%
 # DES
@@ -60,36 +35,19 @@ cipher = DES.new(key, DES.MODE_ECB)
 
 start_time = time.time()
 
-for document in train_base['DES']:
-    document = bytes(document, encoding = 'utf-8')
-    encrypted_base['DES']['train'].append(hexlify(cipher.encrypt(document)).decode())
-    print("document encrypted")
-	
-for document in test_base['DES']:
-    document = bytes(document, encoding = 'utf-8')
-    encrypted_base['DES']['test'].append(hexlify(cipher.encrypt(document)).decode())
-    print("document encrypted")
-	
-for document in validation_base['DES']:
-    document = bytes(document, encoding = 'utf-8')
-    encrypted_base['DES']['validation'].append(hexlify(cipher.encrypt(document)).decode())
-    print("document encrypted")
-	
-i=1
-for document in encrypted_base['DES']['train']:
-    with open(path + "\\DES_train_doc_" + str(i) + ".txt", "w") as text_file:
-        print(document, file=text_file)
-    i+=1
+total_base['DES'] = bytes(total_base['DES'], encoding = 'utf-8')
+
+encrypted_text = cipher.encrypt(total_base['DES'][0:(len(total_base['DES'])-5)])
+encrypted_text = hexlify(encrypted_text).decode()
+
+n = 1000000
+
+for i in range(0,len(encrypted_text), n):
+    encrypted_base['DES'].append(encrypted_text[i:i+n-1])
 
 i=1
-for document in encrypted_base['DES']['test']:
-    with open(path + "\\DES_test_doc_" + str(i) + ".txt", "w") as text_file:
-        print(document, file=text_file)
-    i+=1
-
-i=1
-for document in encrypted_base['DES']['validation']:
-    with open(path + "\\DES_validation_doc_" + str(i) + ".txt", "w") as text_file:
+for document in encrypted_base['DES']:
+    with open(path + "\\DES_doc_" + str(i) + ".txt", "w") as text_file:
         print(document, file=text_file)
     i+=1
 
@@ -124,39 +82,20 @@ cipher = PKCS1_OAEP.new(key = pu_key)
 start_time = time.time()
 
 block_size = 64 # bytes
-for document in train_base['RSA']:
-    document = bytes(document, encoding = 'utf-8')
-    blocks = [cipher.encrypt(document[i:i+block_size]) for i in range(0, len(document), block_size)]
-    encrypted_base['RSA']['train'].append(''.join([hexlify(b).decode() for b in blocks]))
-    print("document encrypted")
-	
-for document in test_base['RSA']:
-    document = bytes(document, encoding = 'utf-8')
-    blocks = [cipher.encrypt(document[i:i+block_size]) for i in range(0, len(document), block_size)]
-    encrypted_base['RSA']['test'].append(''.join([hexlify(b).decode() for b in blocks]))
-    print("document encrypted")
-	
-for document in validation_base['RSA']:
-    document = bytes(document, encoding = 'utf-8')
-    blocks = [cipher.encrypt(document[i:i+block_size]) for i in range(0, len(document), block_size)]
-    encrypted_base['RSA']['validation'].append(''.join([hexlify(b).decode() for b in blocks]))
-    print("document encrypted")
-	
-i=1
-for document in encrypted_base['RSA']['train']:
-    with open(path + "\\RSA_train_doc_" + str(i) + ".txt", "w") as text_file:
-	    print(document, file=text_file)
-    i+=1
+blocks = [cipher.encrypt(bytes(total_base['RSA'][i:i+block_size], encoding = 'utf-8')) for i in range(0, len(total_base['RSA']), block_size)]
+
+encrypted_text=''
+for b in blocks:
+    encrypted_text+=hexlify(b).decode()
+
+n = 1000000
+
+for i in range(0,len(encrypted_text), n):
+    encrypted_base['RSA'].append(encrypted_text[i:i+n-1])
 
 i=1
-for document in encrypted_base['RSA']['test']:
-    with open(path + "\\RSA_test_doc_" + str(i) + ".txt", "w") as text_file:
-        print(document, file=text_file)
-    i+=1
-	
-i=1
-for document in encrypted_base['RSA']['validation']:
-    with open(path + "\\RSA_validation_doc_" + str(i) + ".txt", "w") as text_file:
+for document in encrypted_base['RSA']:
+    with open(path + "\\RSA_doc_" + str(i) + ".txt", "w") as text_file:
         print(document, file=text_file)
     i+=1
 
@@ -172,34 +111,17 @@ el = ElGamal()
 
 start_time = time.time()
 
-for document in train_base['ElGamal']:
-    encrypted_base['ElGamal']['train'].append(el.encrypt(document))
-    print("document encrypted")
-	
-for document in test_base['ElGamal']:  
-    encrypted_base['ElGamal']['test'].append(el.encrypt(document))
-    print("document encrypted")
-	
-for document in validation_base['ElGamal']:
-    encrypted_base['ElGamal']['validation'].append(el.encrypt(document))
-    print("document encrypted")
-	
-i=1
-for document in encrypted_base['ElGamal']['train']:
-    with open(path + "\\ElGamal_train_doc_" + str(i) + ".txt", "w") as text_file:
-	    print(document, file=text_file)	
-    i+=1
+encrypted_text = el.encrypt(total_base['ElGamal'])
+		
+n = 1000000
+
+for i in range(0,len(encrypted_text), n):
+    encrypted_base['ElGamal'].append(encrypted_text[i:i+n-1])
 
 i=1
-for document in encrypted_base['ElGamal']['test']:
-    with open(path + "\\ElGamal_test_doc_" + str(i) + ".txt", "w") as text_file:
-        print(document, file=text_file)
-    i+=1
-	
-i=1
-for document in encrypted_base['ElGamal']['validation']:
-    with open(path + "\\ElGamal_validation_doc_" + str(i) + ".txt", "w") as text_file:
-        print(document, file=text_file)
+for document in encrypted_base['ElGamal']:
+    with open(path + "\\ElGamal_doc_" + str(i) + ".txt", "w") as text_file:
+	    print(document, file=text_file)	
     i+=1
 
 str_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
