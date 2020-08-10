@@ -18,19 +18,24 @@ start_time = time.time()
 
 count = 1
 
+b = 16
+
 for f in onlyfiles:
     with open(path + "\\" + f, 'r') as file:
         data = file.read().replace('\n', '')
-        for i in range(0, len(data), 8):
-            if data[i:min(i+8,len(data))] not in vector_space[f] and len(data[i:min(i+8,len(data))])==8:
-                vector_space[f].append(data[i:min(i+8,len(data))])
+        for i in range(0, len(data), b):
+            if data[i:min(i+b,len(data))] not in vector_space[f]:
+                vector_space[f].append(data[i:min(i+b,len(data))])
+                vector_space[f].append(0)
+            else:
+                vector_space[f][vector_space[f].index(data[i:min(i+b,len(data))])+1]+=1
     print(str(count) + " - " + f + " completed")
     count+=1
 	
-with open(path2 + "vector_space_" + str(16) + ".txt", "w") as text_file:
+with open(path2 + "vector_space_" + str(4*b) + ".txt", "w") as text_file:
     for f in onlyfiles:
         for i in vector_space[f]:
-            print(str(i), file=text_file, end='')
+            print(str(i) + ",", file=text_file, end='')
         print('\n', file=text_file, end='')
 
 print(f'Finished. Elapsed time: {time.time() - start_time}')
@@ -40,16 +45,30 @@ print(f'Finished. Elapsed time: {time.time() - start_time}')
 
 def norm(u):   
 
-    return np.sqrt(len(u))
+    v = []
+
+    for i in range(0,int(len(u)/2)):
+        v.append(u[2*i+1])
+		
+    return np.linalg.norm(v)
 
 def inner(u,v):
+
+    x = []
+    y = []
+
+    for i in range(0,int(len(u)/2)):
+        x.append(u[2*i])
+
+    for i in range(0,int(len(v)/2)):
+        y.append(v[2*i])
     
     val = 0
 
-    for i in u:
-        for j in v:
-            if i == j:	
-                val+=1
+    for i in x:
+        for j in y:
+            if i == j:
+                val+=u[u.index(i)+1]*v[v.index(j)+1]
 
     return val
 
@@ -81,7 +100,7 @@ for f1 in [*vector_space]:
         df1[f2][f1] = cos(vector_space[f1],vector_space[f2])
         print('cos(' + f1 + ', ' + f2 + ') finished')
 
-df1.to_csv(path2 + "Angulo_Cosseno_" + str(32) + ".csv", sep = ';')
+df1.to_csv(path2 + "Angulo_Cosseno_" + str(4*b) + ".csv", sep = ';')
 
 print(f'Finished. Cos Elapsed time: {time.time() - start_time}')
 
@@ -98,15 +117,23 @@ start_time = time.time()
 
 def euclidian_distance(u,v):   
 
+    x = []
+    y = []
+
+    for i in range(0,int(len(u)/2)):
+        x.append(u[2*i])
+
+    for i in range(0,int(len(v)/2)):
+        y.append(u[2*i])
+
     val = []
 
-    for i in u:
-        for j in v:
+    for i in x:
+        for j in y:
             if i == j:
-                break	
-        val.append(1)   
+                val.append(u[u.index(i)+1]-v[v.index(j)+1])
 		
-    return norm(val)
+    return np.linalg.norm(val)
 
 for f1 in [*vector_space]:
     for f2 in [*vector_space][[*vector_space].index(f1):]:
@@ -117,7 +144,7 @@ for f1 in [*vector_space]:
         df2[f2][f1] = euclidian_distance(vector_space[f1],vector_space[f2])
         print('euclidian_distance(' + f1 + ', ' + f2 + ') finished')
 
-df2.to_csv(path2 + "Distancia_Euclidiana_" + str(32) + ".csv", sep = ';')
+df2.to_csv(path2 + "Distancia_Euclidiana_" + str(4*b) + ".csv", sep = ';')
 	
 print(f'Finished. Euclidian Distance Elapsed time: {time.time() - start_time}')
 
@@ -148,7 +175,7 @@ for f1 in [*vector_space]:
         df2[f2][f1] = dice(vector_space[f1],vector_space[f2])
         print('dice(' + f1 + ', ' + f2 + ') finished')
 
-df3.to_csv(path2 + "Coeficiente_Dice_" + str(32) + ".csv", sep = ';')
+df3.to_csv(path2 + "Coeficiente_Dice_" + str(4*b) + ".csv", sep = ';')
 
 print(f'Finished. Dice Elapsed time: {time.time() - start_time}')
 
