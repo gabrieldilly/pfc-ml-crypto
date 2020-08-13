@@ -40,7 +40,7 @@ total_base['DES'] = bytes(total_base['DES'], encoding = 'utf-8')
 encrypted_text = cipher.encrypt(total_base['DES'][0:(len(total_base['DES'])-5)])
 encrypted_text = hexlify(encrypted_text).decode()
 
-n = 1000000
+n = 500000
 
 for i in range(0,len(encrypted_text), n):
     encrypted_base['DES'].append(encrypted_text[i:i+n-1])
@@ -81,14 +81,14 @@ cipher = PKCS1_OAEP.new(key = pu_key)
 
 start_time = time.time()
 
-block_size = 64 # bytes
+block_size = 86 # bytes
 blocks = [cipher.encrypt(bytes(total_base['RSA'][i:i+block_size], encoding = 'utf-8')) for i in range(0, len(total_base['RSA']), block_size)]
 
 encrypted_text=''
 for b in blocks:
     encrypted_text+=hexlify(b).decode()
 
-n = 1000000
+n = 500000
 
 for i in range(0,len(encrypted_text), n):
     encrypted_base['RSA'].append(encrypted_text[i:i+n-1])
@@ -113,7 +113,7 @@ start_time = time.time()
 
 encrypted_text = el.encrypt(total_base['ElGamal'])
 		
-n = 1000000
+n = 500000
 
 for i in range(0,len(encrypted_text), n):
     encrypted_base['ElGamal'].append(encrypted_text[i:i+n-1])
