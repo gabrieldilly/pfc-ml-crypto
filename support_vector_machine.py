@@ -14,36 +14,40 @@ df_16b_cos = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'COS')
 df_16b_dice = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'DICE')
 df_16b_ed = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'ED')
 
-def get_dataset(df, base_selected):
-    df = df.set_index('Column1')
-    df = df + df.T
-    df = df.replace(2, 1)
-    df = df[[c for c in df.columns if base_selected in c]]
-    df['document'] = df.index
-    df['response'] = df['document'].apply(lambda x: 1 if base_selected in x else 0)
-    return df
-
 # def get_dataset(df, base_selected):
 #     df = df.set_index('Column1')
 #     df = df + df.T
 #     df = df.replace(2, 1)
-#     df = df[[c for c in df.columns if base_selected in c and c in [base_selected + '_doc_' + str(x + 1) for x in range(0, 8)]]]
+#     df = df[[c for c in df.columns if base_selected in c]]
 #     df['document'] = df.index
 #     df['response'] = df['document'].apply(lambda x: 1 if base_selected in x else 0)
-#     df = df[df['document'].apply(lambda c: c not in [base_selected + '_doc_' + str(x + 1) for x in range(0, 8)])]
 #     return df
+
+def get_dataset(df, base_selected, training_qtd = 12):
+    df = df.set_index('Column1')
+    df = df + df.T
+    df = df.replace(2, 1)
+    df = df[[c for c in df.columns if base_selected in c and c in [base_selected + '_doc_' + str(x + 1) for x in range(0, training_qtd)]]]
+    df['document'] = df.index
+    df['response'] = df['document'].apply(lambda x: 1 if base_selected in x else 0)
+    # df = df[df['document'].apply(lambda c: c not in [base_selected + '_doc_' + str(x + 1) for x in range(0, training_qtd)])]
+    return df
 
 #%%
 def generate_model(df, base_selected):
     # Importing the dataset
     dataset = get_dataset(df, base_selected)    
     
+    df_train = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] in [str(x + 1) for x in range(0, 12)])]
+    df_test = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] not in [str(x + 1) for x in range(0, 12)])]
     X = dataset.iloc[:, :-2].values
     y = dataset.iloc[:, -1].values
     
     # Splitting the dataset into the Training set and Test set
     from sklearn.model_selection import train_test_split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
+    X_train, X_test = df_train.iloc[:, :-2].values, df_test.iloc[:, :-2].values
+    y_train, y_test = df_train.iloc[:, -1].values, df_test.iloc[:, -1].values
     # print(X_train)
     # print(y_train)
     # print(X_test)
@@ -96,6 +100,8 @@ generate_model(df_8b_ed, 'ElGamal')
 generate_model(df_16b_cos, 'ElGamal')
 generate_model(df_16b_dice, 'ElGamal')
 generate_model(df_16b_ed, 'ElGamal')
+
+dataset = get_dataset(df_8b_cos, 'DES')
 
 #%%
 # Visualising the Training set results
