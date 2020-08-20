@@ -1,3 +1,5 @@
 encrypted_documents
 base
 results
+private_pem.pem
+public_pem.pem
