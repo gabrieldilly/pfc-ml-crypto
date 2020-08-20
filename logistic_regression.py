@@ -27,10 +27,10 @@ def get_dataset(df, base_selected):
 #     df = df.set_index('Column1')
 #     df = df + df.T
 #     df = df.replace(2, 1)
-#     df = df[[c for c in df.columns if base_selected in c and c in [base_selected + '_doc_' + str(x + 1) + '.txt' for x in range(0, 8)]]]
+#     df = df[[c for c in df.columns if base_selected in c and c in [base_selected + '_doc_' + str(x + 1) for x in range(0, 8)]]]
 #     df['document'] = df.index
 #     df['response'] = df['document'].apply(lambda x: 1 if base_selected in x else 0)
-#     df = df[df['document'].apply(lambda c: c not in [base_selected + '_doc_' + str(x + 1) + '.txt' for x in range(0, 8)])]
+#     df = df[df['document'].apply(lambda c: c not in [base_selected + '_doc_' + str(x + 1) for x in range(0, 8)])]
 #     return df
 
 #%%
