@@ -12,23 +12,22 @@ path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\"
 
 onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 
-vector_space = {f: [] for f in onlyfiles}
+vector_space = {f: {} for f in onlyfiles}
 
 start_time = time.time()
 
 count = 1
 
-b = 16
+b = 8
 
 for f in onlyfiles:
     with open(path + "\\" + f, 'r') as file:
         data = file.read().replace('\n', '')
         for i in range(0, len(data), b):
             if data[i:min(i+b,len(data))] not in vector_space[f]:
-                vector_space[f].append(data[i:min(i+b,len(data))])
-                vector_space[f].append(0)
+                vector_space[f][data[i:min(i+b,len(data))]]=1
             else:
-                vector_space[f][vector_space[f].index(data[i:min(i+b,len(data))])+1]+=1
+                vector_space[f][data[i:min(i+b,len(data))]]+=1
     print(str(count) + " - " + f + " completed")
     count+=1
 	
@@ -47,28 +46,19 @@ def norm(u):
 
     v = []
 
-    for i in range(0,int(len(u)/2)):
-        v.append(u[2*i+1])
+    for i in [*u]:
+        v.append(u[i])
 		
     return np.linalg.norm(v)
 
 def inner(u,v):
 
-    x = []
-    y = []
-
-    for i in range(0,int(len(u)/2)):
-        x.append(u[2*i])
-
-    for i in range(0,int(len(v)/2)):
-        y.append(v[2*i])
-    
     val = 0
 
-    for i in x:
-        for j in y:
+    for i in [*u]:
+        for j in [*v]:
             if i == j:
-                val+=u[u.index(i)+1]*v[v.index(j)+1]
+                val+=u[i]*v[j]
 
     return val
 
@@ -117,29 +107,25 @@ start_time = time.time()
 
 def euclidian_distance(u,v):   
 
-    x = []
-    y = []
-
-    for i in range(0,int(len(u)/2)):
-        x.append(u[2*i])
-
-    for i in range(0,int(len(v)/2)):
-        y.append(v[2*i])
-
     val = []
 
-    for i in x:
-        for j in y:
-            if i == j:
-                val.append(u[u.index(i)+1]-v[v.index(j)+1])
-		
+    for i in [*u]:
+        if i in [*v]:
+            val.append(u[i]-v[i])
+        else:
+            val.append(u[i])		
+
+    for i in [*v]:
+        if i not in [*u]:
+            val.append(v[i])
+
     return np.linalg.norm(val)
 
 for f1 in [*vector_space]:
     for f2 in [*vector_space][[*vector_space].index(f1):]:
         if f1 == f2:
             df2[f2][f1] = 1
-            print('cos(' + f1 + ', ' + f2 + ') finished')
+            print('euclidian_distance(' + f1 + ', ' + f2 + ') finished')
             continue
         df2[f2][f1] = euclidian_distance(vector_space[f1],vector_space[f2])
         print('euclidian_distance(' + f1 + ', ' + f2 + ') finished')
