@@ -4,15 +4,25 @@ import time
 import pandas as pd
 import numpy as np
 
+
+#%%
+#Parameters
+
+# Cryptographed files path
 path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+
+# Metric Tables destination
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\"
+
+# Word size
+b = 4
+
+# Chosen metrics
 
 #%%
 #Generating vectors
 
 onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
-
-b = 2
 
 vector_space = {f: [0]*int(pow(16,b)) for f in onlyfiles}
 

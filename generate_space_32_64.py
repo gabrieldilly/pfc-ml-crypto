@@ -4,8 +4,20 @@ import time
 import pandas as pd
 import numpy as np
 
+#%%
+#Parameters
+
+# Cryptographed files path 
 path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+
+# Metric Tables destination
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\"
+
+# Word size
+b = 16
+
+# Chosen metrics
+
 
 #%%
 #Generating vectors
@@ -17,8 +29,6 @@ vector_space = {f: [] for f in onlyfiles}
 start_time = time.time()
 
 count = 1
-
-b = 16
 
 for f in onlyfiles:
     with open(path + "\\" + f, 'r') as file:

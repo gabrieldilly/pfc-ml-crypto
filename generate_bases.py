@@ -4,25 +4,43 @@ import time
 from os import listdir
 from os.path import isfile, join
 
+#%%
+# Parameters
+
+# Cryptographed files path
 path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+
+# Base path
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Base"
+		
+# Number of documents
+d = 50
+
+# % Tests, Train, Validation
+#teste =
+#train =
+#validation = 
+
+# Cryptographed document size
+n = 500000
+
+# Block size
+RSA_block_size = 86 #bytes
+Elgamal_block_size = 64 #bits
+
+# Remark: DES has default block size (64 bits)
 
 #%%
-algorithms = ['RSA', 'DES', 'ElGamal']
-total_texts = ""
-total_base = {k: '' for k in algorithms}
-encrypted_base = {k: [] for k in algorithms}
 
+algorithms = ['RSA', 'DES', 'ElGamal']
+text = ""
+encrypted_base = {k: [] for k in algorithms}
 onlyfiles = [f for f in listdir(path2) if isfile(join(path2, f))]
 
 for f in onlyfiles:
     with open(path2 + "\\" + f, 'r') as file:
         data = file.read().replace('\n', '')
-        total_texts+=data
-
-total_base['DES']+=(total_texts[0:int(len(total_texts)/3)-1])
-total_base['RSA']+=(total_texts[int(len(total_texts)/3):2*int(len(total_texts)/3)-1])
-total_base['ElGamal']+=(total_texts[2*int(len(total_texts)/3):len(total_texts)])
+        text+=data
 
 #%%
 # DES
@@ -35,12 +53,10 @@ cipher = DES.new(key, DES.MODE_ECB)
 
 start_time = time.time()
 
-total_base['DES'] = bytes(total_base['DES'], encoding = 'utf-8')
+DES_text = bytes(text, encoding = 'utf-8')
 
-encrypted_text = cipher.encrypt(total_base['DES'][0:(len(total_base['DES'])-5)])
+encrypted_text = cipher.encrypt(DES_text[0:(16*int(len(DES_text)/16))])
 encrypted_text = hexlify(encrypted_text).decode()
-
-n = 500000
 
 for i in range(0,len(encrypted_text), n):
     encrypted_base['DES'].append(encrypted_text[i:i+n-1])
@@ -50,6 +66,8 @@ for document in encrypted_base['DES']:
     with open(path + "\\DES_doc_" + str(i) + ".txt", "w") as text_file:
         print(document, file=text_file)
     i+=1
+    if i == d+1:
+        break
 
 print(f'Finished. DES elapsed time: {time.time() - start_time}')
 
@@ -81,16 +99,18 @@ cipher = PKCS1_OAEP.new(key = pu_key)
 
 start_time = time.time()
 
-block_size = 86 # bytes
-blocks = [cipher.encrypt(bytes(total_base['RSA'][i:i+block_size], encoding = 'utf-8')) for i in range(0, len(total_base['RSA']), block_size)]
-
 encrypted_text=''
-for b in blocks:
-    encrypted_text+=hexlify(b).decode()
 
-n = 500000
+for i in range(0, len(text), RSA_block_size):
+    try:
+        RSA_text = bytes(text[i:min(i+RSA_block_size, len(text)-1)], encoding = 'utf-8')
+        block = cipher.encrypt(RSA_text)
+        encrypted_text+=hexlify(block).decode()
+    except Exception as e:
+        print(e)
+        continue
 
-for i in range(0,len(encrypted_text), n):
+for i in range(0,len(encrypted_text), n):        
     encrypted_base['RSA'].append(encrypted_text[i:i+n-1])
 
 i=1
@@ -98,6 +118,8 @@ for document in encrypted_base['RSA']:
     with open(path + "\\RSA_doc_" + str(i) + ".txt", "w") as text_file:
         print(document, file=text_file)
     i+=1
+    if i == d+1:
+        break
 
 str_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
 print(f'Finished. RSA elapsed time: {str_time}')
@@ -111,9 +133,7 @@ el = ElGamal()
 
 start_time = time.time()
 
-encrypted_text = el.encrypt(total_base['ElGamal'])
-		
-n = 500000
+encrypted_text = el.encrypt(text, Elgamal_block_size)
 
 for i in range(0,len(encrypted_text), n):
     encrypted_base['ElGamal'].append(encrypted_text[i:i+n-1])
@@ -123,6 +143,8 @@ for document in encrypted_base['ElGamal']:
     with open(path + "\\ElGamal_doc_" + str(i) + ".txt", "w") as text_file:
 	    print(document, file=text_file)	
     i+=1
+    if i == d+1:
+        break
 
 str_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
 print(f'Finished. ElGamal elapsed time: {str_time}')

@@ -43,15 +43,13 @@ class ElGamal(object):
         return x % c
 
     # Asymmetric encryption
-    def encrypt(self, msg):
+    def encrypt(self, msg, block_size):
         en_msg = ''
                 
-#        for i in range(0, len(msg)):
-        for i in range(0, len(msg),64):
+        for i in range(0, len(msg),block_size):
             aux = ''
-            for j in range(i,min(i+64,len(msg))):
-                aux+=str(ord(msg[j]))		
-#            en_msg += str(hex(self.s * ord(msg[i]))[2:])
+            for j in range(i,min(i+block_size,len(msg))):
+                aux+=str(ord(msg[j]))
             en_msg += str(hex(self.s *int(aux)))[2:]
 
         return en_msg
