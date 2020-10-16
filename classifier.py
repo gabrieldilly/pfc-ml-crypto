@@ -138,20 +138,24 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
 
 #%%
 
-print("\nInsira o caminho da pasta com os arquivos criptografados:\n")
+print("\nInsira o caminho da pasta com os documentos de treino criptografados:")
+print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho)\n")
 path = input()
 path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
 
-print("\nInsira o caminho de destino para as tabelas de medidas:\n")
-path2 = input()
-path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
-
 print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores:\n")
+print("(8 ou 16 bits)")
 B = input()
 
 print('\nGerando o espaço de palavras...\n')
 
 vector_space = generate_space_8_16(B, path)
+
+print('\nPronto! Espaço gerado!\n')
+
+print("\nInsira o caminho de destino para as tabelas de medidas de similaridade e dissimilaridade:\n")
+path2 = input()
+path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
 
 print("\nEscreva o número das medidas que deseja usar:\n")
 print("1 - Ângulo Coesseno\n")
@@ -167,6 +171,17 @@ m = input()
 
 print('\nCalculando as medidas...\n')
 
-generate_metric(1, vector_space, B, path, path2)
+generate_metric(n, vector_space, B, path, path2)
+generate_metric(m, vector_space, B, path, path2)
 
 print('\nPronto! Medidas calculadas!\n')
+
+print("\nInsira o caminho da pasta com os documentos de teste criptografados:")
+print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho)\n")
+path = input()
+
+print("\nInsira o caminho de destino para os resultados do modelo para identificar os algoritmos criptográficos:\n")
+path3 = input()
+path3 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
+
+print('\nGerando o modelo...\n')
