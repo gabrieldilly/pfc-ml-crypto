@@ -141,6 +141,8 @@ df7 = generate_metric(7, vector_space, B, path1, path2)
 
 print('\nPronto! Medidas calculadas!\n')
 
+print('\nGerando o modelo...\n')
+
 print("\nInsira o caminho da pasta com os documentos de teste criptografados:")
 print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)\n")
 path3 = input()
@@ -148,5 +150,3 @@ path3 = input()
 print("\nInsira o caminho de destino para os resultados do modelo para identificar os algoritmos criptográficos:\n")
 path4 = input()
 path4 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
-
-print('\nGerando o modelo...\n')
