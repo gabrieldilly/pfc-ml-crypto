@@ -13,7 +13,7 @@ def generate_space_8_16(B, path):
     onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
     vector_space = {f: [0]*int(pow(16,int(int(B)/4))) for f in onlyfiles}
 
-    #start_time = time.time()
+    start_time = time.time()
     count = 1
 
     for f in onlyfiles:
@@ -24,7 +24,7 @@ def generate_space_8_16(B, path):
         print(str(count) + " - " + f + " completed")
         count+=1
 
-    #print(f'Finished. Elapsed time: {time.time() - start_time}')
+    print(f'Finished. Elapsed time: {time.time() - start_time}')
     return vector_space
 
 #%%
@@ -135,7 +135,7 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
 
     df.to_csv(dest_path + "\\" + metric_names[n-1] + " - " + str(B) + " bits.csv", sep = ';')
 
-    print("Medida " +  metric_names[n-1] + " finalizada!\n")
+    print("\nMedida " +  metric_names[n-1] + " finalizada!")
 
     print(f'Finished. Elapsed time: {time.time() - start_time}')
     return df
