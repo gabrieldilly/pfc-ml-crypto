@@ -2,41 +2,72 @@
 
 # Importing the libraries
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
+import glob
 
 # Available datasets
-df_8b_cos = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'COS')
-df_8b_dice = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'DICE')
-df_8b_ed = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'ED')
+print("\nInsira o caminho com as medidas de similaridade e dissimilaridade:\n")
+path = input()
 
-df_16b_cos = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'COS')
-df_16b_dice = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'DICE')
-df_16b_ed = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'ED')
+dfs = {}
+for file in glob.glob(path + '/*.csv'):
+    # key = file.split(' - ')[0]
+    key = file.split('\\')[-1].replace('.csv', '')
+    dfs[key] = pd.read_csv(file, delimiter = ';')
+    
+print(dfs.keys())
 
-# def get_dataset(df, base_selected):
+# df_8b_cos = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'COS')
+# df_8b_dice = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'DICE')
+# df_8b_ed = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'ED')
+
+# df_16b_cos = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'COS')
+# df_16b_dice = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'DICE')
+# df_16b_ed = pd.read_excel('Medidas - 16 bits - 500KB.xlsx', sheet_name = 'ED')
+
+# def get_dataset(df, selected_base):
 #     df = df.set_index('Column1')
 #     df = df + df.T
 #     df = df.replace(2, 1)
-#     df = df[[c for c in df.columns if base_selected in c]]
+#     df = df[[c for c in df.columns if selected_base in c]]
 #     df['document'] = df.index
-#     df['response'] = df['document'].apply(lambda x: 1 if base_selected in x else 0)
+#     df['response'] = df['document'].apply(lambda x: 1 if selected_base in x else 0)
 #     return df
 
-def get_dataset(df, base_selected, training_qtd = 12):
-    df = df.set_index('Column1')
-    df = df + df.T
-    df = df.replace(2, 1)
-    df = df[[c for c in df.columns if base_selected in c and c in [base_selected + '_doc_' + str(x + 1) for x in range(0, training_qtd)]]]
-    df['document'] = df.index
-    df['response'] = df['document'].apply(lambda x: 1 if base_selected in x else 0)
-    # df = df[df['document'].apply(lambda c: c not in [base_selected + '_doc_' + str(x + 1) for x in range(0, training_qtd)])]
-    return df
+def compute_average(row, base):
+    s = qtd = 0
+    for key, val in row.items():
+        if base in key and key != row['document']:
+            s += val
+            qtd += 1
+    return s / qtd
 
-#%%
-def generate_model(df, base_selected):
+def get_dataset(dfs, selected_base, training_qtd = 12):
+    result = pd.DataFrame()
+    for s in dfs:
+        # df = df.set_index('Column1')
+        df = dfs[s]
+        df['Unnamed: 0'] = df['Unnamed: 0'].apply(lambda x: x.replace('.txt', ''))
+        df.columns = [c.replace('.txt', '') for c in df.columns]
+        df = df.set_index('Unnamed: 0')
+        df = df + df.T
+        df = df.replace(2, 1)
+        df = df[[c for c in df.columns if selected_base in c and c in [selected_base + '_doc_' + ('0' if x < 10 else '') + str(x + 1) for x in range(0, training_qtd)]]]
+        df['document'] = df.index
+        df['response'] = df['document'].apply(lambda x: 1 if selected_base in x else 0)
+        df[s] = df.apply(lambda row: compute_average(row, selected_base), axis = 1)
+        # df = df[df['document'].apply(lambda c: c not in [selected_base + '_doc_' + str(x + 1) for x in range(0, training_qtd)])]
+        if result.empty:
+            result = df[['document', 'response', s]].reset_index(drop = True)
+        else:
+            result = pd.merge(result, df[['document', s]].reset_index(drop = True), how = 'inner', on = 'document')
+    return result
+
+#%%Z
+def generate_model(df, selected_base):
     # Importing the dataset
-    dataset = get_dataset(df, base_selected)    
+    dataset = get_dataset(df, selected_base)    
     
     df_train = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] in [str(x + 1) for x in range(0, 12)])]
     df_test = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] not in [str(x + 1) for x in range(0, 12)])]
