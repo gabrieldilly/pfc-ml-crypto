@@ -1,5 +1,4 @@
 from binascii import hexlify
-#from Crypto.Random import get_random_bytes
 import time
 from os import listdir
 from os.path import isfile, join
@@ -25,8 +24,8 @@ def generate_space_8_16(B, path):
         print(str(count) + " - " + f + " completed")
         count+=1
 
-    return vector_space
     #print(f'Finished. Elapsed time: {time.time() - start_time}')
+    return vector_space
 
 #%%
 # Metrics
@@ -112,6 +111,8 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
         for f2 in onlyfiles: 
             df[f1][f2] = 0
 
+    start_time = time.time()
+
     for f1 in [*vector_space]:
         for f2 in [*vector_space][[*vector_space].index(f1):]:
             if f1 == f2:
@@ -132,14 +133,18 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
             if n==7:
                 df[f2][f1] = canberra_distance(vector_space[f1],vector_space[f2])
 
-    df.to_csv(dest_path + "\\" + metric_names[n-1] + " - " str(B) + " bits.csv", sep = ';')
+    df.to_csv(dest_path + "\\" + metric_names[n-1] + " - " + str(B) + " bits.csv", sep = ';')
 
+    print("Medida " +  metric_names[n-1] + " finalizada!\n")
+
+    print(f'Finished. Elapsed time: {time.time() - start_time}')
     return df
 
 #%%
+#Interface
 
 print("\nInsira o caminho da pasta com os documentos de treino criptografados:")
-print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho)\n")
+print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)\n")
 path1 = input()
 path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
 
@@ -171,13 +176,18 @@ m = input()
 
 print('\nCalculando as medidas...\n')
 
-generate_metric(n, vector_space, B, path1, path2)
-generate_metric(m, vector_space, B, path1, path2)
+df1 = generate_metric(1, vector_space, B, path1, path2)
+df2 = generate_metric(2, vector_space, B, path1, path2)
+df3 = generate_metric(3, vector_space, B, path1, path2)
+df4 = generate_metric(4, vector_space, B, path1, path2)
+df5 = generate_metric(5, vector_space, B, path1, path2)
+df6 = generate_metric(6, vector_space, B, path1, path2)
+df7 = generate_metric(7, vector_space, B, path1, path2)
 
 print('\nPronto! Medidas calculadas!\n')
 
 print("\nInsira o caminho da pasta com os documentos de teste criptografados:")
-print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho)\n")
+print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)\n")
 path3 = input()
 
 print("\nInsira o caminho de destino para os resultados do modelo para identificar os algoritmos criptográficos:\n")
