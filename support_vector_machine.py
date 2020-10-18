@@ -15,9 +15,9 @@ for file in glob.glob(path + '/*.csv'):
     # key = file.split(' - ')[0]
     key = file.split('\\')[-1].replace('.csv', '')
     dfs[key] = pd.read_csv(file, delimiter = ';')
-    
-print(dfs.keys())
 
+metric_names = ['Cosseno', 'Simple-Matching', 'Dice', 'Jaccard', 'Euclidian', 'Manhattan', 'Canberra']
+    
 # df_8b_cos = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'COS')
 # df_8b_dice = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'DICE')
 # df_8b_ed = pd.read_excel('Medidas - 8 bits - 500KB.xlsx', sheet_name = 'ED')
@@ -64,21 +64,28 @@ def get_dataset(dfs, selected_base, training_qtd = 12):
             result = pd.merge(result, df[['document', s]].reset_index(drop = True), how = 'inner', on = 'document')
     return result
 
-#%%Z
-def generate_model(df, selected_base):
+#%%
+selected_metrics = {
+    'Cosseno': 16,
+    'Dice': 8
+    }
+def generate_model(dfs, selected_metrics, selected_base):
     # Importing the dataset
-    dataset = get_dataset(df, selected_base)    
+    training_qtd = 40
+    test_qtd = 10
+    dataset = get_dataset(dfs, selected_base, training_qtd + test_qtd)
+    dataset = dataset[['document', 'response'] + [k + ' - ' + str(v) + ' bits' for k, v in selected_metrics.items()]]
     
-    df_train = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] in [str(x + 1) for x in range(0, 12)])]
-    df_test = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] not in [str(x + 1) for x in range(0, 12)])]
-    X = dataset.iloc[:, :-2].values
-    y = dataset.iloc[:, -1].values
+    df_train = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] in [str(x + 1) for x in range(0, training_qtd)])]
+    df_test = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] not in [str(x + 1) for x in range(0, training_qtd)])]
+    X = dataset.iloc[:, 2:].values
+    y = dataset.iloc[:, 1].values
     
     # Splitting the dataset into the Training set and Test set
     from sklearn.model_selection import train_test_split
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
-    X_train, X_test = df_train.iloc[:, :-2].values, df_test.iloc[:, :-2].values
-    y_train, y_test = df_train.iloc[:, -1].values, df_test.iloc[:, -1].values
+    X_train, X_test = df_train.iloc[:, 2:].values, df_test.iloc[:, 2:].values
+    y_train, y_test = df_train.iloc[:, 1].values, df_test.iloc[:, 1].values
     # print(X_train)
     # print(y_train)
     # print(X_test)
