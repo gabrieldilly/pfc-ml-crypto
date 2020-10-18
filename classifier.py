@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import pandas as pd
 import numpy as np
+from metrics import *
 
 #%%
 #Generating vectors
@@ -27,78 +28,28 @@ def generate_space_8_16(B, path):
     print(f'Finished. Elapsed time: {time.time() - start_time}')
     return vector_space
 
-#%%
-# Metrics
-
-metric_names = ['Cosseno', 'Simple-Matching', 'Dice', 'Jaccard', 'Euclidian', 'Manhattan', 'Canberra']
-
-# Angulo Cosseno
-def cos(u,v):
-    u = np.array(u)
-    v = np.array(v)
+def generate_space_32_64(B, path):
     
-    n1 = np.linalg.norm(u)
-    n2 = np.linalg.norm(v)
-    d = np.inner(u,v)
-    
-    return d/(n1*n2)
+    onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
+    vector_space = {f: {} for f in onlyfiles}
 
-# Simple-Matching Coefficient
-def simple_matching(u,v):
-    u = np.array(u)
-    v = np.array(v)
+    start_time = time.time()
+    count = 1
 
-    return np.inner(u,v)
+    for f in onlyfiles:
+        with open(path + "\\" + f, 'r') as file:
+            data = file.read().replace('\n', '')
+            for i in range(0, len(data), int(int(B)/4)):
+                if data[i:min(i+int(int(B)/4),len(data))] not in [*vector_space[f]]:
+                    vector_space[f][data[i:min(i+int(int(B)/4),len(data))]] = 1
+                else:
+                    vector_space[f][data[i:min(i+int(int(B)/4),len(data))]]+=1
+        print(str(count) + " - " + f + " completed")
+        count+=1
 
-# Dice Coefficient
-def dice(u,v):
-    u = np.array(u)
-    v = np.array(v)
-    
-    n1 = np.linalg.norm(u)
-    n2 = np.linalg.norm(v)
-    d = np.inner(u,v)
-    
-    return 2*d/(n1*n1+n2*n2)
+    print(f'Finished. Elapsed time: {time.time() - start_time}')
 
-# Jaccard Coefficient
-def jaccard(u,v):
-    u = np.array(u)
-    v = np.array(v)
-
-    n1 = np.linalg.norm(u)
-    n2 = np.linalg.norm(v)
-
-    return (np.inner(u,v))/(n1*n1 + n2*n2 - np.inner(u,v))
-
-# Euclidian Distance
-def euclidian_distance(u,v):
-    u = np.array(u, dtype='i4')
-    v = np.array(v, dtype='i4')
-    
-    return np.linalg.norm(u-v)
-11
-# Manhattan Distance
-def manhattan_distance(u,v):
-    u = np.array(u)
-    v = np.array(v)
-    res = 0
-
-    for i in range(0, len(u)):
-        res = res + abs(u[i]-v[i])
-    
-    return res
-
-# Canberra Distance
-def canberra_distance(u,v):
-    u = np.array(u)
-    v = np.array(v)
-    res = 0
-
-    for i in range(0, len(u)):
-        res = res + abs(u[i]-v[i])/(abs(u[i])+abs(v[i]))
-    
-    return res
+    return vector_space
 
 #%%
 # Generate Metric
@@ -119,19 +70,19 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
                 df[f2][f1] = 1
                 continue
             if n==1:
-                df[f2][f1] = cos(vector_space[f1],vector_space[f2])
+                df[f2][f1] = cos(B, vector_space[f1],vector_space[f2])
             if n==2:
-                df[f2][f1] = simple_matching(vector_space[f1],vector_space[f2])
+                df[f2][f1] = simple_matching(B, vector_space[f1],vector_space[f2])
             if n==3:
-                df[f2][f1] = dice(vector_space[f1],vector_space[f2])
+                df[f2][f1] = dice(B, vector_space[f1],vector_space[f2])
             if n==4:
-                df[f2][f1] = jaccard(vector_space[f1],vector_space[f2])
+                df[f2][f1] = jaccard(B, vector_space[f1],vector_space[f2])
             if n==5:
-                df[f2][f1] = euclidian_distance(vector_space[f1],vector_space[f2])
+                df[f2][f1] = euclidian_distance(B, vector_space[f1],vector_space[f2])
             if n==6:
-                df[f2][f1] = manhattan_distance(vector_space[f1],vector_space[f2])
+                df[f2][f1] = manhattan_distance(B, vector_space[f1],vector_space[f2])
             if n==7:
-                df[f2][f1] = canberra_distance(vector_space[f1],vector_space[f2])
+                df[f2][f1] = canberra_distance(B, vector_space[f1],vector_space[f2])
 
     df.to_csv(dest_path + "\\" + metric_names[n-1] + " - " + str(B) + " bits.csv", sep = ';')
 
@@ -149,12 +100,16 @@ path1 = input()
 path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
 
 print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores:\n")
-print("(8 ou 16 bits)")
+print("(8, 16, 32 ou 64 bits)")
 B = input()
 
 print('\nGerando o espaço de palavras...\n')
 
-vector_space = generate_space_8_16(B, path1)
+if int(B)==8 or int(B)==16:
+    vector_space = generate_space_8_16(B, path1)
+
+if int(B)==32 or int(B)==64:
+    vector_space = generate_space_32_64(B, path1)
 
 print('\nPronto! Espaço gerado!\n')
 
