@@ -146,7 +146,7 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
 print("\nInsira o caminho da pasta com os documentos de treino criptografados:")
 print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)\n")
 path1 = input()
-path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+# path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
 
 print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores:\n")
 print("(8 ou 16 bits)")
@@ -160,10 +160,10 @@ print('\nPronto! Espaço gerado!\n')
 
 print("\nInsira o caminho de destino para as tabelas de medidas de similaridade e dissimilaridade:\n")
 path2 = input()
-path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
+# path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
 
 print("\nEscreva o número das medidas que deseja usar:\n")
-print("1 - Ângulo Coesseno\n")
+print("1 - Ângulo Cosseno\n")
 print("2 - Coeficiente Simple-Matching\n")
 print("3 - Coeficiente Dice\n")
 print("4 - Coeficiente Jaccard\n")
@@ -192,6 +192,6 @@ path3 = input()
 
 print("\nInsira o caminho de destino para os resultados do modelo para identificar os algoritmos criptográficos:\n")
 path4 = input()
-path4 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
+# path4 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
 
 print('\nGerando o modelo...\n')
