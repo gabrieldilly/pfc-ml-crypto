@@ -152,7 +152,7 @@ while True:
 print('\nCalculando as medidas...\n')
 
 for m in metric_list:
-    dfs[metric_names[m - 1]] = generate_metric(m, vector_space, B, path1, path2)
+    dfs[metric_names[m - 1] + ' - ' + str(B) + ' bits'] = generate_metric(m, vector_space, B, path1, path2)
 
 print('\nPronto! Medidas calculadas!\n')
 
