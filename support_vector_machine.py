@@ -30,14 +30,14 @@ def get_dataset(dfs, selected_base, training_qtd):
     for s in dfs:
         # df = df.set_index('Column1')
         df = dfs[s]
-        df['Unnamed: 0'] = df['Unnamed: 0'].apply(lambda x: x.replace('.txt', ''))
+        df['document'] = df.index
+        df['document'] = df['document'].apply(lambda x: x.replace('.txt', ''))
         df.columns = [c.replace('.txt', '') for c in df.columns]
-        df = df.set_index('Unnamed: 0')
+        df = df.set_index('document')
         df = df + df.T
         for i in (0, df.shape[0]):
             df[i][i] = 1
         df = df[[c for c in df.columns if selected_base in c and c in [selected_base + '_doc_' + ('0' if x < 10 else '') + str(x + 1) for x in range(0, training_qtd)]]]
-        df['document'] = df.index
         df['response'] = df['document'].apply(lambda x: 1 if selected_base in x else 0)
         df[s] = df.apply(lambda row: compute_average(row, selected_base), axis = 1)
         # df = df[df['document'].apply(lambda c: c not in [selected_base + '_doc_' + str(x + 1) for x in range(0, training_qtd)])]
@@ -55,7 +55,7 @@ def get_dataset(dfs, selected_base, training_qtd):
 
 def generate_model(dfs, selected_metrics, selected_base, training_qtd, test_qtd):
     # Importing the dataset
-    dataset = get_dataset(dfs, selected_base, training_qtd + test_qtd)
+    dataset = get_dataset(dfs, selected_base, 100)
     dataset = dataset[['document', 'response'] + [k + ' - ' + str(v) + ' bits' for k, v in selected_metrics.items()]]
     
     df_train = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] in [str(x + 1) for x in range(0, training_qtd)])]
@@ -95,7 +95,27 @@ def generate_model(dfs, selected_metrics, selected_base, training_qtd, test_qtd)
     cm = confusion_matrix(y_test, y_pred)
     print(cm)
     accuracy_score(y_test, y_pred)
+
+
+
     
+from matplotlib.colors import ListedColormap
+X_set, y_set = sc.inverse_transform(X_train), y_train
+X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 10, stop = X_set[:, 0].max() + 10, step = 0.25),
+                        np.arange(start = X_set[:, 1].min() - 1000, stop = X_set[:, 1].max() + 1000, step = 0.25))
+plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+                alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+plt.title('SVM (Training set)')
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.legend()
+plt.show()
+
+
 #%%
 #generate_model(df_8b_cos, 'DES')
 #generate_model(df_8b_dice, 'DES')

@@ -96,7 +96,7 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
 #Interface
 
 print("\nInsira o caminho da pasta com os documentos de treino criptografados:")
-print("Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB. 
+print("Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB.")
 print("Escreva no padrão: nomealgoritmo_doc_número.txt. Ex.: RSA_doc_11.txt")
 
 path1 = input()
@@ -140,19 +140,19 @@ print("7 - Distância Canberra\n")
 selected_metrics = {}
 choice = ''
 metric_list = []
-df = []
+dfs = {}
 
 while True:
     choice = input()
-    if choice == 0:
+    if choice == '' or int(choice) == 0:
         break
-    metric_list.append(choice)        
-    selected_metrics[metric_names[choice-1]] = 8
+    metric_list.append(int(choice))        
+    selected_metrics[metric_names[int(choice) - 1]] = B
 
 print('\nCalculando as medidas...\n')
 
-for i in range(0, len(metric_list)):
-    df.append(generate_metric(i, vector_space, B, path1, path2))
+for m in metric_list:
+    dfs[metric_names[m - 1]] = generate_metric(m, vector_space, B, path1, path2)
 
 print('\nPronto! Medidas calculadas!\n')
 
@@ -162,7 +162,7 @@ path4 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Res
 
 print('\nGerando o modelo...\n')
 
-generate_model(df, selected_metrics, 'DES')
-generate_model(df, selected_metrics, 'ElGamal')
-generate_model(df, selected_metrics, 'RSA')
+generate_model(dfs, selected_metrics, 'DES')
+generate_model(dfs, selected_metrics, 'ElGamal')
+generate_model(dfs, selected_metrics, 'RSA')
 
