@@ -121,14 +121,14 @@ print("\nInsira o caminho de destino para as tabelas de medidas de similaridade 
 path2 = input()
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
 
-print("\nEscreva o número das medidas que deseja usar (aperte 0 para terminar):")
+print("\nEscreva o número das medidas que deseja usar (aperte 0 para terminar):\n")
 
-print("1 - Ângulo Cosseno\n")
-print("2 - Coeficiente Simple-Matching\n")
-print("3 - Coeficiente Dice\n")
-print("4 - Coeficiente Jaccard\n")
-print("5 - Distância Euclidiana\n")
-print("6 - Distância Manhattan\n")
+print("1 - Ângulo Cosseno")
+print("2 - Coeficiente Simple-Matching")
+print("3 - Coeficiente Dice")
+print("4 - Coeficiente Jaccard")
+print("5 - Distância Euclidiana")
+print("6 - Distância Manhattan")
 print("7 - Distância Canberra\n")
 
 selected_metrics = {}

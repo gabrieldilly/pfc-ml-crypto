@@ -14,7 +14,7 @@ path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encr
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Base"
 		
 # Number of documents
-d = 200
+d = 30
 
 # % Tests, Train, Validation
 #teste =
