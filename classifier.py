@@ -156,7 +156,11 @@ path3 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Res
 
 print('\nGerando o modelo...\n')
 
-generate_model(dfs, selected_metrics, 'DES')
-generate_model(dfs, selected_metrics, 'ElGamal')
-generate_model(dfs, selected_metrics, 'RSA')
+generate_model(dfs, selected_metrics, 'DES', [1,0,0,1,0,0,1,0,0,1,0,0,1,0,0])
+generate_model(dfs, selected_metrics, 'ElGamal',[0,0,1,0,0,1,0,0,1,0,0,1,0,0,1])
+generate_model(dfs, selected_metrics, 'RSA', [0,1,0,0,1,0,0,1,0,0,1,0,0,1,0])
+
+
+
+
 

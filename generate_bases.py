@@ -63,7 +63,7 @@ for i in range(0,len(encrypted_text), n):
 
 i=1
 for document in encrypted_base['DES']:
-    with open(path + "\\DES_doc_" + str(i) + ".txt", "w") as text_file:
+    with open(path + "\\DES_doc_" + (('0'+str(i)) if i<10 else str(i)) + ".txt", "w") as text_file:
         print(document, file=text_file)
     i+=1
     if i == d+1:
@@ -115,7 +115,7 @@ for i in range(0,len(encrypted_text), n):
 
 i=1
 for document in encrypted_base['RSA']:
-    with open(path + "\\RSA_doc_" + str(i) + ".txt", "w") as text_file:
+    with open(path + "\\RSA_doc_" + (('0'+str(i)) if i<10 else str(i)) + ".txt", "w") as text_file:
         print(document, file=text_file)
     i+=1
     if i == d+1:
@@ -140,7 +140,7 @@ for i in range(0,len(encrypted_text), n):
 
 i=1
 for document in encrypted_base['ElGamal']:
-    with open(path + "\\ElGamal_doc_" + str(i) + ".txt", "w") as text_file:
+    with open(path + "\\ElGamal_doc_" + (('0'+str(i)) if i<10 else str(i)) + ".txt", "w") as text_file:
 	    print(document, file=text_file)	
     i+=1
     if i == d+1:
