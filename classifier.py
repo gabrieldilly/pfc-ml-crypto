@@ -95,9 +95,11 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
 #%%
 #Interface
 
-print("\nInsira o caminho da pasta com os documentos de treino criptografados:\n")
-print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB.)")
-print("(Escreva no padrão: nomealgoritmo_doc_número.txt. Ex.: RSA_doc_11.txt)")
+print("\nInsira o caminho da pasta com os documentos de treino e teste criptografados:\n")
+print("- Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB;")
+print("- Escreva no padrão:")
+print("    * Exemplos documentos de treino: RSA_doc_11.txt, DES_doc_13.txt, ElGamal_doc_33.txt;")
+print("    * Exemplos documentos de teste: test_doc_1.txt, test_doc_5.txt, test_doc_33.txt.")
 
 path1 = input()
 path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
