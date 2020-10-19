@@ -104,13 +104,7 @@ print("    * Exemplos documentos de teste: test_doc_1.txt, test_doc_5.txt, test_
 path1 = input()
 path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
 
-print("\nInsira o caminho da pasta com os documentos de teste criptografados:")
-print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)")
-
-path2 = input()
-path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Tests"
-
-print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores (8, 16, 32 ou 64 bits):\n")
+print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores (8, 16, 32 ou 64 bits):")
 B = input()
 
 print('\nGerando o espaço de palavras...\n')
@@ -124,10 +118,10 @@ if int(B)==32 or int(B)==64:
 print('\nPronto! Espaço gerado!\n')
 
 print("\nInsira o caminho de destino para as tabelas de medidas de similaridade e dissimilaridade:")
-path3 = input()
-path3 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
+path2 = input()
+path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
 
-print("\nEscreva o número das medidas que deseja usar (aperte 0 para terminar):\n")
+print("\nEscreva o número das medidas que deseja usar (aperte 0 para terminar):")
 
 print("1 - Ângulo Cosseno\n")
 print("2 - Coeficiente Simple-Matching\n")
@@ -157,12 +151,12 @@ for m in metric_list:
 print('\nPronto! Medidas calculadas!\n')
 
 print("\nInsira o caminho de destino para os resultados do modelo para identificar os algoritmos criptográficos:")
-path4 = input()
-path4 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
+path3 = input()
+path3 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
 
 print('\nGerando o modelo...\n')
 
-generate_model(dfs, selected_metrics, 'DES', 100)
-generate_model(dfs, selected_metrics, 'ElGamal', 100)
-generate_model(dfs, selected_metrics, 'RSA', 100)
+generate_model(dfs, selected_metrics, 'DES')
+generate_model(dfs, selected_metrics, 'ElGamal')
+generate_model(dfs, selected_metrics, 'RSA')
 

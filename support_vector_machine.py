@@ -25,7 +25,7 @@ def compute_average(row, base):
             qtd += 1
     return s / qtd
 
-def get_dataset(dfs, selected_base, training_qtd):
+def get_dataset(dfs, selected_base):
     result = pd.DataFrame()
     for s in dfs:
         # df = df.set_index('Column1')
@@ -36,8 +36,8 @@ def get_dataset(dfs, selected_base, training_qtd):
         df = df.set_index('document')
         df = df + df.T
         for i in range(0, df.shape[0]):
-            df.iloc[i, i] = 1 if df.iloc[i, i] == 2 else df.iloc[i, i] 
-        df = df[[c for c in df.columns if selected_base in c and c in [selected_base + '_doc_' + str(x + 1) for x in range(0, training_qtd)]]]
+            df.iloc[i, i] = 1 if df.iloc[i, i] == 2 else df.iloc[i, i]
+        df = df[[c for c in df.columns if selected_base in c]]
         df['document'] = df.index
         df['response'] = df['document'].apply(lambda x: 1 if selected_base in x else 0)
         df[s] = df.apply(lambda row: compute_average(row, selected_base), axis = 1)
@@ -54,15 +54,15 @@ def get_dataset(dfs, selected_base, training_qtd):
 #    'Dice': 8
 #    }
 
-def generate_model(dfs, selected_metrics, selected_base, training_qtd, test_qtd):
+def generate_model(dfs, selected_metrics, selected_base):
     # Importing the dataset
-    dataset = get_dataset(dfs, selected_base, 100)
+    dataset = get_dataset(dfs, selected_base)
     dataset = dataset[['document', 'response'] + [k + ' - ' + str(v) + ' bits' for k, v in selected_metrics.items()]]
     
-    df_train = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] in [str(x + 1) for x in range(0, training_qtd)])]
-    df_test = dataset[dataset['document'].apply(lambda c: c.split('_doc_')[1] not in [str(x + 1) for x in range(0, training_qtd)])]
-    X = dataset.iloc[:, 2:].values
-    y = dataset.iloc[:, 1].values
+    df_train = dataset[dataset['document'].apply(lambda c: 'test' not in c)]
+    df_test = dataset[dataset['document'].apply(lambda c: 'test' in c)]
+    #X = dataset.iloc[:, 2:].values
+    #y = dataset.iloc[:, 1].values
     
     # Splitting the dataset into the Training set and Test set
     from sklearn.model_selection import train_test_split
@@ -97,25 +97,21 @@ def generate_model(dfs, selected_metrics, selected_base, training_qtd, test_qtd)
     print(cm)
     accuracy_score(y_test, y_pred)
 
-
-
-    
-from matplotlib.colors import ListedColormap
-X_set, y_set = sc.inverse_transform(X_train), y_train
-X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.001, stop = X_set[:, 0].max() + 0.001, step = 0.001),
-                        np.arange(start = X_set[:, 1].min() - 100, stop = X_set[:, 1].max() + 100, step = 0.25))
-plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
-                alpha = 0.75, cmap = ListedColormap(('red', 'green')))
-plt.xlim(X1.min(), X1.max())
-plt.ylim(X2.min(), X2.max())
-for i, j in enumerate(np.unique(y_set)):
-    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
-plt.title('SVM (Training set)')
-plt.xlabel(dataset.columns[2])
-plt.ylabel(dataset.columns[3])
-plt.legend()
-plt.show()
-
+    from matplotlib.colors import ListedColormap
+    X_set, y_set = sc.inverse_transform(X_train), y_train
+    X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.001, stop = X_set[:, 0].max() + 0.001, step = 0.001),
+                            np.arange(start = X_set[:, 1].min() - 100, stop = X_set[:, 1].max() + 100, step = 0.25))
+    plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+                    alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+    plt.xlim(X1.min(), X1.max())
+    plt.ylim(X2.min(), X2.max())
+    for i, j in enumerate(np.unique(y_set)):
+        plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+    plt.title('SVM (Training set)')
+    plt.xlabel(dataset.columns[2])
+    plt.ylabel(dataset.columns[3])
+    plt.legend()
+    plt.show()
 
 #%%
 #generate_model(df_8b_cos, 'DES')
