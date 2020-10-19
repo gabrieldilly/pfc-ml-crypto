@@ -5,6 +5,7 @@ from os.path import isfile, join
 import pandas as pd
 import numpy as np
 from metrics import *
+from support_vector_machine import *
 
 #%%
 #Generating vectors
@@ -95,9 +96,17 @@ def generate_metric(n, vector_space, B, src_path, dest_path):
 #Interface
 
 print("\nInsira o caminho da pasta com os documentos de treino criptografados:")
-print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)\n")
+print("Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB. 
+print("Escreva no padrão: nomealgoritmo_doc_número.txt. Ex.: RSA_doc_11.txt")
+
 path1 = input()
-# path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
+
+print("\nInsira o caminho da pasta com os documentos de teste criptografados:")
+print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)")
+
+path2 = input()
+path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Tests"
 
 print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores:\n")
 print("(8, 16, 32 ou 64 bits)")
@@ -114,10 +123,12 @@ if int(B)==32 or int(B)==64:
 print('\nPronto! Espaço gerado!\n')
 
 print("\nInsira o caminho de destino para as tabelas de medidas de similaridade e dissimilaridade:\n")
-path2 = input()
-# path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
+path3 = input()
+path3 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
 
 print("\nEscreva o número das medidas que deseja usar:\n")
+print("(Aperte 0 para terminar)\n")
+
 print("1 - Ângulo Cosseno\n")
 print("2 - Coeficiente Simple-Matching\n")
 print("3 - Coeficiente Dice\n")
@@ -126,27 +137,32 @@ print("5 - Distância Euclidiana\n")
 print("6 - Distância Manhattan\n")
 print("7 - Distância Canberra\n")
 
-n = input()
-m = input()
+selected_metrics = {}
+choice = ''
+metric_list = []
+df = []
+
+while True:
+    choice = input()
+    if choice == 0:
+        break
+    metric_list.append(choice)        
+    selected_metrics[metric_names[choice-1]] = 8
 
 print('\nCalculando as medidas...\n')
 
-df1 = generate_metric(1, vector_space, B, path1, path2)
-df2 = generate_metric(2, vector_space, B, path1, path2)
-df3 = generate_metric(3, vector_space, B, path1, path2)
-df4 = generate_metric(4, vector_space, B, path1, path2)
-df5 = generate_metric(5, vector_space, B, path1, path2)
-df6 = generate_metric(6, vector_space, B, path1, path2)
-df7 = generate_metric(7, vector_space, B, path1, path2)
+for i in range(0, len(metric_list)):
+    df.append(generate_metric(i, vector_space, B, path1, path2))
 
 print('\nPronto! Medidas calculadas!\n')
 
-print('\nGerando o modelo...\n')
-
-print("\nInsira o caminho da pasta com os documentos de teste criptografados:")
-print("(Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB)\n")
-path3 = input()
-
 print("\nInsira o caminho de destino para os resultados do modelo para identificar os algoritmos criptográficos:\n")
 path4 = input()
-# path4 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
+path4 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
+
+print('\nGerando o modelo...\n')
+
+generate_model(df, selected_metrics, 'DES')
+generate_model(df, selected_metrics, 'ElGamal')
+generate_model(df, selected_metrics, 'RSA')
+

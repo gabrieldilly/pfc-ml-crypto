@@ -14,7 +14,7 @@ path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encr
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Base"
 		
 # Number of documents
-d = 50
+d = 200
 
 # % Tests, Train, Validation
 #teste =
@@ -22,7 +22,7 @@ d = 50
 #validation = 
 
 # Cryptographed document size
-n = 500000
+n = 500*1024
 
 # Block size
 RSA_block_size = 86 #bytes
