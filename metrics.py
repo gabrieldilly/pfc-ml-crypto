@@ -35,7 +35,7 @@ metric_names = ['Cosseno', 'Simple-Matching', 'Dice', 'Jaccard', 'Euclidian', 'M
 
 # Angulo Cosseno
 def cos(B,u,v):
-    if B==8 or B==16:
+    if int(B)==8 or int(B)==16:
         u = np.array(u)
         v = np.array(v)
         
@@ -45,7 +45,7 @@ def cos(B,u,v):
         
         return d/(n1*n2)
 
-    if B==32 or B==64:
+    if int(B)==32 or int(B)==64:
         n1 = norm(u)
         n2 = norm(v)
         d = inner(u,v)
@@ -54,18 +54,18 @@ def cos(B,u,v):
 
 # Simple-Matching Coefficient
 def simple_matching(B,u,v):
-    if B==8 or B==16:
+    if int(B)==8 or int(B)==16:
         u = np.array(u)
         v = np.array(v)
 
         return np.inner(u,v)
     
-    if B==32 or B==64:
+    if int(B)==32 or int(B)==64:
         return inner(u,v)
 
 # Dice Coefficient
 def dice(B,u,v):
-    if B==8 or B==16:
+    if int(B)==8 or int(B)==16:
         u = np.array(u)
         v = np.array(v)
         
@@ -75,7 +75,7 @@ def dice(B,u,v):
         
         return 2*d/(n1*n1+n2*n2)
     
-    if B==32 or B==64:
+    if int(B)==32 or int(B)==64:
         n1 = norm(u)
         n2 = norm(v)
         d = inner(u,v)
@@ -85,7 +85,7 @@ def dice(B,u,v):
 
 # Jaccard Coefficient
 def jaccard(B,u,v):
-    if B==8 or B==16:
+    if int(B)==8 or int(B)==16:
         u = np.array(u)
         v = np.array(v)
 
@@ -94,7 +94,7 @@ def jaccard(B,u,v):
 
         return (np.inner(u,v))/(n1*n1 + n2*n2 - np.inner(u,v))
     
-    if B==32 or B==64:
+    if int(B)==32 or int(B)==64:
         n1 = norm(u)
         n2 = norm(v)
 
@@ -103,13 +103,13 @@ def jaccard(B,u,v):
 
 # Euclidian Distance
 def euclidian_distance(B,u,v):
-    if B==8 or B==16:
+    if int(B)==8 or int(B)==16:
         u = np.array(u, dtype='i4')
         v = np.array(v, dtype='i4')
         
         return np.linalg.norm(u-v)
     
-    if B==32 or B==64:
+    if int(B)==32 or int(B)==64:
         val = []
 
         for i in [*u]:
@@ -127,7 +127,7 @@ def euclidian_distance(B,u,v):
 
 # Manhattan Distance
 def manhattan_distance(B,u,v):
-    if B==8 or B==16:
+    if int(B)==8 or int(B)==16:
         u = np.array(u)
         v = np.array(v)
         res = 0
@@ -137,7 +137,7 @@ def manhattan_distance(B,u,v):
         
         return res
 
-    if B==32 or B==64:
+    if int(B)==32 or int(B)==64:
         val = []
         res = 0
 
@@ -159,7 +159,7 @@ def manhattan_distance(B,u,v):
 
 # Canberra Distance
 def canberra_distance(B,u,v):
-    if B==8 or B==16:
+    if int(B)==8 or int(B)==16:
         u = np.array(u)
         v = np.array(v)
         res = 0
@@ -169,7 +169,7 @@ def canberra_distance(B,u,v):
         
         return res
 
-    if B==32 or B==64:
+    if int(B)==32 or int(B)==64:
         val = []
         res = 0
 
