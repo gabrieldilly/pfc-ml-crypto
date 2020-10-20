@@ -102,25 +102,25 @@ print("- Escreva no padrão:")
 print("    * Exemplos documentos de treino: RSA_doc_11.txt, DES_doc_13.txt, ElGamal_doc_33.txt;")
 print("    * Exemplos documentos de teste: test_doc_01.txt, test_doc_05.txt, test_doc_33.txt.")
 
-#path1 = input()
+path1 = input()
 path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
 
 print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores (8, 16, 32 ou 64 bits):")
-#B = input()
-B = 16
+# B = input()
+B = 8
 
 print('\nGerando o espaço de palavras...\n')
 
-#if int(B)==8 or int(B)==16:
-#    vector_space = generate_space_8_16(B, path1)
+# if int(B)==8 or int(B)==16:
+#     vector_space = generate_space_8_16(B, path1)
 
-#if int(B)==32 or int(B)==64:
-#    vector_space = generate_space_32_64(B, path1)
+# if int(B)==32 or int(B)==64:
+#     vector_space = generate_space_32_64(B, path1)
 
 print('\nPronto! Espaço gerado!\n')
 
 print("\nInsira o caminho de destino para as tabelas de medidas de similaridade e dissimilaridade:")
-#path2 = input()
+path2 = input()
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
 
 print("\nEscreva o número das medidas que deseja usar (aperte 0 para terminar):\n")
@@ -149,13 +149,6 @@ print('\nCalculando as medidas...\n')
 # for m in metric_list:
 #     dfs[metric_names[m - 1] + ' - ' + str(B) + ' bits'] = generate_metric(m, vector_space, B, path1, path2)
 
-# Euclidian_Distance for committee
-if 5 not in metric_list:
-    #df_committee = generate_metric(5, vector_space, B, path1, path2)
-    df_committee = pd.read_csv(metric_path + 'Euclidian' + ' - ' + str(B) + ' bits.csv', delimiter = ';')
-else:
-    df_committee = dfs['Euclidian - ' + str(B) + ' bits']
-    
 def format_df(df):
     df['document'] = df.index
     df['document'] = df['document'].apply(lambda x: x.replace('.txt', ''))
@@ -176,116 +169,315 @@ print('\nPronto! Medidas calculadas!\n')
 
 import pickle
 # # Saving the objects:
-# with open('16bits.pkl', 'wb') as f:
+# with open(B + 'bits.pkl', 'wb') as f:
 #     pickle.dump([selected_metrics, dfs], f)
-# # Getting back the objects:
-with open('16bits.pkl', 'rb') as f:
+# Getting back the objects:
+with open(B + 'bits.pkl', 'rb') as f:
     selected_metrics, dfs = pickle.load(f)
 
-selected_metrics = {
-    'Cosseno': '16',
-    'Simple-Matching': '16',
-    #'Dice': '16',
-    #'Jaccard': '16',
-    'Euclidian': '16'
-    # 'Manhattan': '16',
-    # 'Canberra': '8'
-    }
-
+# Euclidian_Distance for committee
 df_committee = dfs['Euclidian - ' + str(B) + ' bits']
 
 print('\nGerando o modelo...\n')
 
-# Evaluating model
-resp_des = []
-resp_rsa = []
-resp_elgamal = []
 
-count_tests = 0
-onlyfiles = [f for f in listdir(path1) if isfile(join(path1, f))]
-for f in onlyfiles:
-    if 'test' in f:
-        count_tests+=1
+pairs = [
+    {
+        'Cosseno': B,
+        'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        'Cosseno': B,
+        # 'Simple-Matching': B,
+        'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        'Simple-Matching': B,
+        'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        'Simple-Matching': B,
+        # 'Dice': B,
+        'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        'Dice': B,
+        'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        'Dice': B,
+        # 'Jaccard': B,
+        'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        'Jaccard': B,
+        'Euclidian': B,
+        # 'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        'Jaccard': B,
+        # 'Euclidian': B,
+        'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        'Euclidian': B,
+        'Manhattan': B,
+        # 'Canberra': B,
+    }]
 
-for i in range(0,count_tests):
-    if i<20:
-        resp_des.append(1)
-        resp_rsa.append(0)
-        resp_elgamal.append(0)
-    if i>=20 and i<40:
-        resp_des.append(0)
-        resp_rsa.append(1)
-        resp_elgamal.append(0)
-    if i>=40:
-        resp_des.append(0)
-        resp_rsa.append(0)
-        resp_elgamal.append(1)
+pairs = [
+    {
+        'Cosseno': B,
+    }, {
+        'Simple-Matching': B,
+    }, {
+        'Dice': B,
+    }, {
+        'Jaccard': B,
+    }, {
+        'Euclidian': B,
+    }, {
+        'Manhattan': B,
+    }, {
+        'Canberra': B,
+    }, {
+        'Cosseno': B,
+        'Simple-Matching': B,
+        'Dice': B,
+        'Jaccard': B,
+        'Euclidian': B,
+        'Manhattan': B,
+        # 'Canberra': B,
+    }, {
+        'Cosseno': B,
+        'Simple-Matching': B,
+        'Dice': B,
+        'Jaccard': B,
+        'Euclidian': B,
+        'Manhattan': B,
+        'Canberra': B,
+    }, {
+        'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        'Jaccard': B,
+        # 'Euclidian': B,
+        # 'Manhattan': B,
+        'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        'Euclidian': B,
+        # 'Manhattan': B,
+        'Canberra': B,
+    }, {
+        # 'Cosseno': B,
+        # 'Simple-Matching': B,
+        # 'Dice': B,
+        # 'Jaccard': B,
+        # 'Euclidian': B,
+        'Manhattan': B,
+        'Canberra': B,
+    }]
 
-pred_des, accuracy_des, cm_des = generate_model(dfs, selected_metrics, 'DES', resp_des)
-pred_rsa, accuracy_rsa, cm_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
-pred_elgamal, accuracy_elgamal, cm_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
-
-# Committee
-des_result = []
-rsa_result = []
-elgamal_result = []
-
-for i in range(0, count_tests):
-    if pred_des[i] + pred_rsa[i] + pred_elgamal[i] == 1:
-        des_result.append(pred_des[i])
-        rsa_result.append(pred_rsa[i])
-        elgamal_result.append(pred_elgamal[i])
-    else:
-        row = df_committee[df_committee.index == 'test_doc_' + (('0'+str(i+1)) if i+1<10 else str(i+1))].iloc[0]
-        des_dist = compute_average(row, 'DES')
-        rsa_dist = compute_average(row, 'RSA')
-        elgamal_dist = compute_average(row, 'ElGamal')
-        if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
-            des_result.append(1)
-            rsa_result.append(0)
-            elgamal_result.append(0)
-        if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
-            des_result.append(0)
-            rsa_result.append(1)
-            elgamal_result.append(0)
-        if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
-            des_result.append(0)
-            rsa_result.append(0)
-            elgamal_result.append(1)
-
-correct_results = 0
-
-# evaluating classifier
-for i in range(0, count_tests):
-    if des_result[i] == 1 and resp_des[i] == 1:
-        correct_results += 1
-    if rsa_result[i] == 1 and resp_rsa[i] == 1:
-        correct_results += 1
-    if elgamal_result[i] == 1 and resp_elgamal[i] == 1:
-        correct_results += 1
-
-#y_pred = des_result + rsa_result + elgamal_result
-#y_test = resp_des + resp_rsa + resp_elgamal
-
-# Making the Confusion Matrix
-from sklearn.metrics import confusion_matrix, accuracy_score
-cm_comitee = confusion_matrix(y_test, y_pred)
-print(cm_comitee)
-accuracy_comitee = accuracy_score(y_test, y_pred)
-
-df_accuracy = pd.read_csv('accuracy.csv', sep = ';')
-df_accuracy = df_accuracy.append({
-    'selected_metrics': str(selected_metrics),
-    'accuracy_des': accuracy_des,
-    'accuracy_rsa': accuracy_rsa,
-    'accuracy_elgamal': accuracy_elgamal,
-    'accuracy_comitee': accuracy_comitee,
-    'cm_des': str(cm_des),
-    'cm_rsa': str(cm_rsa),
-    'cm_elgamal': str(cm_elgamal),
-    'cm_comitee': str(cm_comitee),
-    'time': datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-}, ignore_index = True)
-df_accuracy.to_csv('accuracy.csv', sep = ';', index = False)
-
-print("A acurácia do sistema é de " + str(correct_results) + " em " + str(count_tests) + "(" + str(correct_results/count_tests*(100)) + "%)")
+        
+for selected_metrics in pairs:
+    
+    # Evaluating model
+    resp_des = []
+    resp_rsa = []
+    resp_elgamal = []
+    
+    count_tests = 0
+    onlyfiles = [f for f in listdir(path1) if isfile(join(path1, f))]
+    for f in onlyfiles:
+        if 'test' in f:
+            count_tests+=1
+    
+    for i in range(0,count_tests):
+        if i<20:
+            resp_des.append(1)
+            resp_rsa.append(0)
+            resp_elgamal.append(0)
+        if i>=20 and i<40:
+            resp_des.append(0)
+            resp_rsa.append(1)
+            resp_elgamal.append(0)
+        if i>=40:
+            resp_des.append(0)
+            resp_rsa.append(0)
+            resp_elgamal.append(1)
+    
+    pred_des, accuracy_des, cm_des = generate_model(dfs, selected_metrics, 'DES', resp_des)
+    pred_rsa, accuracy_rsa, cm_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
+    pred_elgamal, accuracy_elgamal, cm_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
+    
+    # Committee
+    des_result = []
+    rsa_result = []
+    elgamal_result = []
+    
+    for i in range(0, count_tests):
+        if pred_des[i] + pred_rsa[i] + pred_elgamal[i] == 1:
+            des_result.append(pred_des[i])
+            rsa_result.append(pred_rsa[i])
+            elgamal_result.append(pred_elgamal[i])
+        else:
+            row = df_committee[df_committee.index == 'test_doc_' + (('0'+str(i+1)) if i+1<10 else str(i+1))].iloc[0]
+            des_dist = compute_average(row, 'DES')
+            rsa_dist = compute_average(row, 'RSA')
+            elgamal_dist = compute_average(row, 'ElGamal')
+            if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
+                des_result.append(1)
+                rsa_result.append(0)
+                elgamal_result.append(0)
+            if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
+                des_result.append(0)
+                rsa_result.append(1)
+                elgamal_result.append(0)
+            if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
+                des_result.append(0)
+                rsa_result.append(0)
+                elgamal_result.append(1)
+    
+    correct_results = 0
+    
+    # evaluating classifier
+    for i in range(0, count_tests):
+        if des_result[i] == 1 and resp_des[i] == 1:
+            correct_results += 1
+        if rsa_result[i] == 1 and resp_rsa[i] == 1:
+            correct_results += 1
+        if elgamal_result[i] == 1 and resp_elgamal[i] == 1:
+            correct_results += 1
+    
+    y_pred = des_result + rsa_result + elgamal_result
+    y_test = resp_des + resp_rsa + resp_elgamal
+    
+    # Making the Confusion Matrix
+    from sklearn.metrics import confusion_matrix, accuracy_score
+    cm_comitee = confusion_matrix(y_test, y_pred)
+    print(cm_comitee)
+    accuracy_comitee = accuracy_score(y_test, y_pred)
+    
+    df_accuracy = pd.read_csv('accuracy.csv', sep = ';')
+    df_accuracy = df_accuracy.append({
+        'selected_metrics': str(selected_metrics),
+        'accuracy_des': accuracy_des,
+        'accuracy_rsa': accuracy_rsa,
+        'accuracy_elgamal': accuracy_elgamal,
+        'accuracy_comitee': accuracy_comitee,
+        'cm_des': str(cm_des),
+        'cm_rsa': str(cm_rsa),
+        'cm_elgamal': str(cm_elgamal),
+        'cm_comitee': str(cm_comitee),
+        'time': datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+    }, ignore_index = True)
+    df_accuracy.to_csv('accuracy.csv', sep = ';', index = False)
+    
+    print("A acurácia do sistema é de " + str(correct_results) + " em " + str(count_tests) + "(" + str(correct_results/count_tests*(100)) + "%)")
