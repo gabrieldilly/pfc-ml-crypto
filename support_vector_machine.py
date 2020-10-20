@@ -122,6 +122,8 @@ def generate_model(dfs, selected_metrics, selected_base, test_resp):
     plt.legend()
     plt.show()
 
+    return y_pred
+
 #%%
 
 #def evaluate_model(test_resp):

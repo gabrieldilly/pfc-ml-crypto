@@ -148,29 +148,35 @@ print('\nCalculando as medidas...\n')
 for m in metric_list:
     dfs[metric_names[m - 1] + ' - ' + str(B) + ' bits'] = generate_metric(m, vector_space, B, path1, path2)
 
+#Euclidian_Distance for committee
+if 5 not in metric_list:
+    df_committee = generate_metric(m, vector_space, B, path1, path2)
+else:
+    df_committee = dfs['Euclidian - ' + str(B) + ' bits']
+
 print('\nPronto! Medidas calculadas!\n')
 
 print('\nGerando o modelo...\n')
 
+# Evaluating model
 resp_des = []
 resp_rsa = []
 resp_elgamal = []
 
 for i in range (0,60):
     if i<20:
-        resp_des.append(1)
-        resp_rsa.append(0)
-        resp_elgamal.append(0)
-    elif i>=20 and i<40:
-        resp_des.append(0)
-        resp_rsa.append(1)
-        resp_elgamal.append(0)
-    elif i>=40:
-        resp_des.append(0)
-        resp_rsa.append(0)
-        resp_elgamal.append(1)
-        
-        
+        resp_des[i].append(1)
+        resp_rsa[i].append(0)
+        resp_elgamal[i].append(0)
+    if i>=20 and i<40:
+        resp_des[i].append(0)
+        resp_rsa[i].append(1)
+        resp_elgamal[i].append(0)
+    if i>=40:
+        resp_des[i].append(0)
+        resp_rsa[i].append(0)
+        resp_elgamal[i].append(1)
+
 selected_metrics = {
     'Cosseno': '8',
     'Simple-Matching': '8',
@@ -179,11 +185,46 @@ selected_metrics = {
     # 'Euclidian': '8',
     # 'Manhattan': '8',
     # 'Canberra': '8'
-    }        
+    }
 
-generate_model(dfs, selected_metrics, 'DES', resp_des)
-generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
-generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
+pred_des = generate_model(dfs, selected_metrics, 'DES', resp_des)
+pred_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
+pred_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
+
+# Committee
+count_tests = 0
+onlyfiles = [f for f in listdir(path1) if isfile(join(path1, f))]
+for f in onlyfiles:
+    if 'test' in f:
+        count_tests+=1
+
+rsa_result = des_result = elgamal_result = []
+
+for i in range(0, count_tests):
+    if pred_des[i] + pred_rsa[i] + pred_elgamal[i] < 2:
+        des_result[i] = pred_des[i]
+        rsa_result[i] = pred_rsa[i]
+        elgamal_result[i] = pred_elgamal[i]
+    if pred_des[i] + pred_rsa[i] + pred_elgamal[i] >= 2:
+        for index, row in df_committee.iterrows():
+            if index == 'test_doc_' + (('0'+str(i)) if i<10 else str(i)):
+                des_dist = compute_average(row, 'DES')
+                rsa_dist = compute_average(row, 'RSA')
+        elgamal_dist = compute_average(row, 'ElGamal')
+        if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
+            des_result[i] = 1
+            rsa_result[i] = 0
+            elgamal_result[i] = 0
+        if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
+            des_result[i] = 0
+            rsa_result[i] = 1
+            elgamal_result[i] = 0
+        if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
+            des_result[i] = 0
+            rsa_result[i] = 0
+            elgamal_result[i] = 1
+
+# evaluating classifier
 
 
 
