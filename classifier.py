@@ -152,21 +152,34 @@ print('\nPronto! Medidas calculadas!\n')
 
 print('\nGerando o modelo...\n')
 
-resp_des = resp_rsa = resp_elgamal = []
+resp_des = []
+resp_rsa = []
+resp_elgamal = []
 
 for i in range (0,60):
     if i<20:
-        resp_des[i] = 1
-        resp_rsa[i] = 0
-        resp_elgamal[i] = 0
-    if i>=20 and i<40:
-        resp_des[i] = 0
-        resp_rsa[i] = 1
-        resp_elgamal[i] = 0
-    if i>=40:
-        resp_des[i] = 0
-        resp_rsa[i] = 0
-        resp_elgamal[i] = 1
+        resp_des.append(1)
+        resp_rsa.append(0)
+        resp_elgamal.append(0)
+    elif i>=20 and i<40:
+        resp_des.append(0)
+        resp_rsa.append(1)
+        resp_elgamal.append(0)
+    elif i>=40:
+        resp_des.append(0)
+        resp_rsa.append(0)
+        resp_elgamal.append(1)
+        
+        
+selected_metrics = {
+    'Cosseno': '8',
+    'Simple-Matching': '8',
+    # 'Dice': '8',
+    # 'Jaccard': '8',
+    # 'Euclidian': '8',
+    # 'Manhattan': '8',
+    # 'Canberra': '8'
+    }        
 
 generate_model(dfs, selected_metrics, 'DES', resp_des)
 generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
