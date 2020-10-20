@@ -188,4 +188,12 @@ generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
 
 
 
+import pickle
 
+# Saving the objects:
+with open('16bits.pkl', 'wb') as f:
+    pickle.dump([selected_metrics, dfs], f)
+
+# Getting back the objects:
+with open('16bits.pkl', 'rb') as f:
+    selected_metrics, dfs = pickle.load(f)
