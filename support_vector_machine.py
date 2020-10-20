@@ -94,7 +94,7 @@ def generate_model(dfs, selected_metrics, selected_base, test_resp):
     accuracy_score(y_test, y_pred)
 
     from matplotlib.colors import ListedColormap
-    #X_set, y_set = sc.inverse_transform(X_train), y_train
+    # X_set, y_set = sc.inverse_transform(X_train), y_train
     X_set, y_set = sc.inverse_transform(X_test), y_test
     X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.001, stop = X_set[:, 0].max() + 0.001, step = 0.00001),
                             np.arange(start = X_set[:, 1].min() - 100, stop = X_set[:, 1].max() + 100, step = 0.25))
@@ -110,6 +110,22 @@ def generate_model(dfs, selected_metrics, selected_base, test_resp):
     plt.legend()
     plt.show()
 
+    return y_pred
+
 #%%
 
 #def evaluate_model(test_resp):
+
+# ## Plot 3D
+# %matplotlib inline
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
+
+# fig = plt.figure()
+# ax = plt.axes(projection='3d')
+
+# # Data for a three-dimensional line
+# zline = X_set[:, 2]
+# xline = X_set[:, 0]
+# yline = X_set[:, 1]
+# ax.scatter3D(xline, yline, zline, c=y_set, cmap='viridis')
