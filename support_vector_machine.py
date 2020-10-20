@@ -85,7 +85,7 @@ def generate_model(dfs, selected_metrics, selected_base, test_resp):
     
     # Predicting the Test set results
     y_pred = classifier.predict(X_test)
-    print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+    # print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
     
     # Making the Confusion Matrix
     from sklearn.metrics import confusion_matrix, accuracy_score
@@ -122,7 +122,7 @@ def generate_model(dfs, selected_metrics, selected_base, test_resp):
     # plt.legend()
     # plt.show()
 
-    return y_pred
+    return y_pred, accuracy_score(y_test, y_pred), cm
 
 #%%
 

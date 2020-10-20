@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import pandas as pd
 import numpy as np
+from datetime import datetime
 from metrics import *
 from support_vector_machine import *
 
@@ -149,10 +150,27 @@ print('\nCalculando as medidas...\n')
 #     dfs[metric_names[m - 1] + ' - ' + str(B) + ' bits'] = generate_metric(m, vector_space, B, path1, path2)
 
 # Euclidian_Distance for committee
-#if 5 not in metric_list:
-#    df_committee = generate_metric(5, vector_space, B, path1, path2)
-#else:
-#    df_committee = dfs['Euclidian - ' + str(B) + ' bits.csv']
+if 5 not in metric_list:
+    #df_committee = generate_metric(5, vector_space, B, path1, path2)
+    df_committee = pd.read_csv(metric_path + 'Euclidian' + ' - ' + str(B) + ' bits.csv', delimiter = ';')
+else:
+    df_committee = dfs['Euclidian - ' + str(B) + ' bits']
+    
+def format_df(df):
+    df['document'] = df.index
+    df['document'] = df['document'].apply(lambda x: x.replace('.txt', ''))
+    df.columns = [c.replace('.txt', '') for c in df.columns]
+    df = df.set_index('document')
+    df = df + df.T
+    for i in range(0, df.shape[0]):
+        df.iloc[i, i] = 1 if df.iloc[i, i] == 2 else df.iloc[i, i]
+    df['document'] = df.index
+    return df
+    
+df_committee = format_df(df_committee)
+
+# for m in metric_list:
+#     dfs[metric_names[m - 1] + ' - ' + str(B) + ' bits'] = pd.read_csv(metric_path + metric_names[m - 1] + ' - ' + str(B) + ' bits.csv', delimiter = ';')
 
 print('\nPronto! Medidas calculadas!\n')
 
@@ -203,13 +221,13 @@ for i in range(0,count_tests):
         resp_rsa.append(0)
         resp_elgamal.append(1)
 
-pred_des = generate_model(dfs, selected_metrics, 'DES', resp_des)
-pred_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
-pred_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
+pred_des, accuracy_des, cm_des = generate_model(dfs, selected_metrics, 'DES', resp_des)
+pred_rsa, accuracy_rsa, cm_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
+pred_elgamal, accuracy_elgamal, cm_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
 
 # Committee
-rsa_result = []
 des_result = []
+rsa_result = []
 elgamal_result = []
 
 for i in range(0, count_tests):
@@ -218,43 +236,56 @@ for i in range(0, count_tests):
         rsa_result.append(pred_rsa[i])
         elgamal_result.append(pred_elgamal[i])
     else:
-        row = df_committee[df_committee['document']] == 'test_doc_' + (('0' + str(i+1)) if i<9 else str(i+1)) + '.txt':
-        for index, row in df_committee.iterrows():
-            if index == 
-                des_dist = compute_average(row, 'DES')
-                rsa_dist = compute_average(row, 'RSA')
-                elgamal_dist = compute_average(row, 'ElGamal')
-                if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
-                    des_result.append(1)
-                    rsa_result.append(0)
-                    elgamal_result.append(0)
-                if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
-                    des_result.append(0)
-                    rsa_result.append(1)
-                    elgamal_result.append(0)
-                if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
-                    des_result.append(0)
-                    rsa_result.append(0)
-                    elgamal_result.append(1)
+        row = df_committee[df_committee.index == 'test_doc_' + (('0'+str(i+1)) if i+1<10 else str(i+1))].iloc[0]
+        des_dist = compute_average(row, 'DES')
+        rsa_dist = compute_average(row, 'RSA')
+        elgamal_dist = compute_average(row, 'ElGamal')
+        if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
+            des_result.append(1)
+            rsa_result.append(0)
+            elgamal_result.append(0)
+        if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
+            des_result.append(0)
+            rsa_result.append(1)
+            elgamal_result.append(0)
+        if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
+            des_result.append(0)
+            rsa_result.append(0)
+            elgamal_result.append(1)
 
 correct_results = 0
 
 # evaluating classifier
 for i in range(0, count_tests):
     if des_result[i] == 1 and resp_des[i] == 1:
-        correct_results+=1
+        correct_results += 1
     if rsa_result[i] == 1 and resp_rsa[i] == 1:
-        correct_results+=1
+        correct_results += 1
     if elgamal_result[i] == 1 and resp_elgamal[i] == 1:
-        correct_results+=1
+        correct_results += 1
 
 #y_pred = des_result + rsa_result + elgamal_result
 #y_test = resp_des + resp_rsa + resp_elgamal
 
 # Making the Confusion Matrix
-#from sklearn.metrics import confusion_matrix, accuracy_score
-#cm = confusion_matrix(y_test, y_pred)
-#print(cm)
-#accuracy_score(y_test, y_pred)
+from sklearn.metrics import confusion_matrix, accuracy_score
+cm_comitee = confusion_matrix(y_test, y_pred)
+print(cm_comitee)
+accuracy_comitee = accuracy_score(y_test, y_pred)
 
-print("A acurácia do sistema é de " + str(correct_results) + " em " + str(count_tests) + " (" + str(correct_results/count_tests*(100)) + "%)")
+df_accuracy = pd.read_csv('accuracy.csv', sep = ';')
+df_accuracy = df_accuracy.append({
+    'selected_metrics': str(selected_metrics),
+    'accuracy_des': accuracy_des,
+    'accuracy_rsa': accuracy_rsa,
+    'accuracy_elgamal': accuracy_elgamal,
+    'accuracy_comitee': accuracy_comitee,
+    'cm_des': str(cm_des),
+    'cm_rsa': str(cm_rsa),
+    'cm_elgamal': str(cm_elgamal),
+    'cm_comitee': str(cm_comitee),
+    'time': datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+}, ignore_index = True)
+df_accuracy.to_csv('accuracy.csv', sep = ';', index = False)
+
+print("A acurácia do sistema é de " + str(correct_results) + " em " + str(count_tests) + "(" + str(correct_results/count_tests*(100)) + "%)")
