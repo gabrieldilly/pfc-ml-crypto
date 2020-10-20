@@ -1,0 +1,16 @@
+accuracy_comitee;accuracy_des;accuracy_elgamal;accuracy_rsa;cm_comitee;cm_des;cm_elgamal;cm_rsa;selected_metrics;time
+1.0;1.0;1.0;0.8833333333333333;"[[120   0]
+ [  0  60]]";"[[40  0]
+ [ 0 20]]";"[[40  0]
+ [ 0 20]]";"[[35  5]
+ [ 2 18]]";{'Euclidian': 16, 'Manhattan': 16, 'Cosseno': 16, 'Simple-Matching': 16, 'Dice': 16, 'Jaccard': 16};20/10/2020 12:12:40
+1.0;1.0;1.0;0.8833333333333333;"[[120   0]
+ [  0  60]]";"[[40  0]
+ [ 0 20]]";"[[40  0]
+ [ 0 20]]";"[[35  5]
+ [ 2 18]]";{'Euclidian': 16, 'Manhattan': 16, 'Cosseno': 16, 'Simple-Matching': 16, 'Dice': 16, 'Jaccard': 16};20/10/2020 12:12:48
+1.0;1.0;1.0;0.8833333333333333;"[[120   0]
+ [  0  60]]";"[[40  0]
+ [ 0 20]]";"[[40  0]
+ [ 0 20]]";"[[35  5]
+ [ 2 18]]";{'Euclidian': 16, 'Manhattan': 16, 'Cosseno': 16, 'Simple-Matching': 16, 'Dice': 16, 'Jaccard': 16};20/10/2020 12:18:38
