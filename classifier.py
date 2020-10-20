@@ -99,7 +99,7 @@ print("\nInsira o caminho da pasta com os documentos de treino e teste criptogra
 print("- Recomenda-se colocar igual quantidade de documentos com cada algoritmo, todos de mesmo tamanho, em torno de 500 KB;")
 print("- Escreva no padrão:")
 print("    * Exemplos documentos de treino: RSA_doc_11.txt, DES_doc_13.txt, ElGamal_doc_33.txt;")
-print("    * Exemplos documentos de teste: test_doc_1.txt, test_doc_5.txt, test_doc_33.txt.")
+print("    * Exemplos documentos de teste: test_doc_01.txt, test_doc_05.txt, test_doc_33.txt.")
 
 path1 = input()
 path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
@@ -150,15 +150,27 @@ for m in metric_list:
 
 print('\nPronto! Medidas calculadas!\n')
 
-print("\nInsira o caminho de destino para os resultados do modelo para identificar os algoritmos criptográficos:")
-path3 = input()
-path3 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Resultados"
-
 print('\nGerando o modelo...\n')
 
-generate_model(dfs, selected_metrics, 'DES', [1,0,0,1,0,0,1,0,0,1,0,0,1,0,0])
-generate_model(dfs, selected_metrics, 'ElGamal',[0,0,1,0,0,1,0,0,1,0,0,1,0,0,1])
-generate_model(dfs, selected_metrics, 'RSA', [0,1,0,0,1,0,0,1,0,0,1,0,0,1,0])
+resp_des = resp_rsa = resp_elgamal = []
+
+for i in range (0,60):
+    if i<20:
+        resp_des[i] = 1
+        resp_rsa[i] = 0
+        resp_elgamal[i] = 0
+    if i>=20 and i<40:
+        resp_des[i] = 0
+        resp_rsa[i] = 1
+        resp_elgamal[i] = 0
+    if i>=40:
+        resp_des[i] = 0
+        resp_rsa[i] = 0
+        resp_elgamal[i] = 1
+
+generate_model(dfs, selected_metrics, 'DES', resp_des)
+generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
+generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
 
 
 
