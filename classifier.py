@@ -302,10 +302,7 @@ pairs = [
         'Euclidian': B,
         'Manhattan': B,
         # 'Canberra': B,
-    }]
-
-pairs = [
-    {
+    }, {
         'Cosseno': B,
     }, {
         'Simple-Matching': B,
@@ -318,8 +315,8 @@ pairs = [
     }, {
         'Manhattan': B,
     }, {
-        'Canberra': B,
-    }, {
+    #     'Canberra': B,
+    # }, {
         'Cosseno': B,
         'Simple-Matching': B,
         'Dice': B,
@@ -327,157 +324,186 @@ pairs = [
         'Euclidian': B,
         'Manhattan': B,
         # 'Canberra': B,
-    }, {
-        'Cosseno': B,
-        'Simple-Matching': B,
-        'Dice': B,
-        'Jaccard': B,
-        'Euclidian': B,
-        'Manhattan': B,
-        'Canberra': B,
-    }, {
-        'Cosseno': B,
-        # 'Simple-Matching': B,
-        # 'Dice': B,
-        # 'Jaccard': B,
-        # 'Euclidian': B,
-        # 'Manhattan': B,
-        'Canberra': B,
-    }, {
-        # 'Cosseno': B,
-        'Simple-Matching': B,
-        # 'Dice': B,
-        # 'Jaccard': B,
-        # 'Euclidian': B,
-        # 'Manhattan': B,
-        'Canberra': B,
-    }, {
-        # 'Cosseno': B,
-        # 'Simple-Matching': B,
-        'Dice': B,
-        # 'Jaccard': B,
-        # 'Euclidian': B,
-        # 'Manhattan': B,
-        'Canberra': B,
-    }, {
-        # 'Cosseno': B,
-        # 'Simple-Matching': B,
-        # 'Dice': B,
-        'Jaccard': B,
-        # 'Euclidian': B,
-        # 'Manhattan': B,
-        'Canberra': B,
-    }, {
-        # 'Cosseno': B,
-        # 'Simple-Matching': B,
-        # 'Dice': B,
-        # 'Jaccard': B,
-        'Euclidian': B,
-        # 'Manhattan': B,
-        'Canberra': B,
-    }, {
-        # 'Cosseno': B,
-        # 'Simple-Matching': B,
-        # 'Dice': B,
-        # 'Jaccard': B,
-        # 'Euclidian': B,
-        'Manhattan': B,
-        'Canberra': B,
+    # }, {
+    #     'Cosseno': B,
+    #     'Simple-Matching': B,
+    #     'Dice': B,
+    #     'Jaccard': B,
+    #     'Euclidian': B,
+    #     'Manhattan': B,
+    #     'Canberra': B,
+    # }, {
+    #     'Cosseno': B,
+    #     # 'Simple-Matching': B,
+    #     # 'Dice': B,
+    #     # 'Jaccard': B,
+    #     # 'Euclidian': B,
+    #     # 'Manhattan': B,
+    #     'Canberra': B,
+    # }, {
+    #     # 'Cosseno': B,
+    #     'Simple-Matching': B,
+    #     # 'Dice': B,
+    #     # 'Jaccard': B,
+    #     # 'Euclidian': B,
+    #     # 'Manhattan': B,
+    #     'Canberra': B,
+    # }, {
+    #     # 'Cosseno': B,
+    #     # 'Simple-Matching': B,
+    #     'Dice': B,
+    #     # 'Jaccard': B,
+    #     # 'Euclidian': B,
+    #     # 'Manhattan': B,
+    #     'Canberra': B,
+    # }, {
+    #     # 'Cosseno': B,
+    #     # 'Simple-Matching': B,
+    #     # 'Dice': B,
+    #     'Jaccard': B,
+    #     # 'Euclidian': B,
+    #     # 'Manhattan': B,
+    #     'Canberra': B,
+    # }, {
+    #     # 'Cosseno': B,
+    #     # 'Simple-Matching': B,
+    #     # 'Dice': B,
+    #     # 'Jaccard': B,
+    #     'Euclidian': B,
+    #     # 'Manhattan': B,
+    #     'Canberra': B,
+    # }, {
+    #     # 'Cosseno': B,
+    #     # 'Simple-Matching': B,
+    #     # 'Dice': B,
+    #     # 'Jaccard': B,
+    #     # 'Euclidian': B,
+    #     'Manhattan': B,
+    #     'Canberra': B,
     }]
 
-        
+train_sizes = np.arange(start = 10, stop = 81, step = 10)
+
 for selected_metrics in pairs:
+    for train_size in train_sizes:
     
-    # Evaluating model
-    resp_des = []
-    resp_rsa = []
-    resp_elgamal = []
-    
-    count_tests = 0
-    onlyfiles = [f for f in listdir(path1) if isfile(join(path1, f))]
-    for f in onlyfiles:
-        if 'test' in f:
-            count_tests+=1
-    
-    for i in range(0,count_tests):
-        if i<20:
-            resp_des.append(1)
-            resp_rsa.append(0)
-            resp_elgamal.append(0)
-        if i>=20 and i<40:
-            resp_des.append(0)
-            resp_rsa.append(1)
-            resp_elgamal.append(0)
-        if i>=40:
-            resp_des.append(0)
-            resp_rsa.append(0)
-            resp_elgamal.append(1)
-    
-    pred_des, accuracy_des, cm_des = generate_model(dfs, selected_metrics, 'DES', resp_des)
-    pred_rsa, accuracy_rsa, cm_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
-    pred_elgamal, accuracy_elgamal, cm_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
-    
-    # Committee
-    des_result = []
-    rsa_result = []
-    elgamal_result = []
-    
-    for i in range(0, count_tests):
-        if pred_des[i] + pred_rsa[i] + pred_elgamal[i] == 1:
-            des_result.append(pred_des[i])
-            rsa_result.append(pred_rsa[i])
-            elgamal_result.append(pred_elgamal[i])
-        else:
-            row = df_committee[df_committee.index == 'test_doc_' + (('0'+str(i+1)) if i+1<10 else str(i+1))].iloc[0]
-            des_dist = compute_average(row, 'DES')
-            rsa_dist = compute_average(row, 'RSA')
-            elgamal_dist = compute_average(row, 'ElGamal')
-            if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
-                des_result.append(1)
-                rsa_result.append(0)
-                elgamal_result.append(0)
-            if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
-                des_result.append(0)
-                rsa_result.append(1)
-                elgamal_result.append(0)
-            if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
-                des_result.append(0)
-                rsa_result.append(0)
-                elgamal_result.append(1)
-    
-    correct_results = 0
-    
-    # evaluating classifier
-    for i in range(0, count_tests):
-        if des_result[i] == 1 and resp_des[i] == 1:
-            correct_results += 1
-        if rsa_result[i] == 1 and resp_rsa[i] == 1:
-            correct_results += 1
-        if elgamal_result[i] == 1 and resp_elgamal[i] == 1:
-            correct_results += 1
-    
-    y_pred = des_result + rsa_result + elgamal_result
-    y_test = resp_des + resp_rsa + resp_elgamal
-    
-    # Making the Confusion Matrix
-    from sklearn.metrics import confusion_matrix, accuracy_score
-    cm_comitee = confusion_matrix(y_test, y_pred)
-    print(cm_comitee)
-    accuracy_comitee = accuracy_score(y_test, y_pred)
-    
-    df_accuracy = pd.read_csv('accuracy.csv', sep = ';')
-    df_accuracy = df_accuracy.append({
-        'selected_metrics': str(selected_metrics),
-        'accuracy_des': accuracy_des,
-        'accuracy_rsa': accuracy_rsa,
-        'accuracy_elgamal': accuracy_elgamal,
-        'accuracy_comitee': accuracy_comitee,
-        'cm_des': str(cm_des),
-        'cm_rsa': str(cm_rsa),
-        'cm_elgamal': str(cm_elgamal),
-        'cm_comitee': str(cm_comitee),
-        'time': datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-    }, ignore_index = True)
-    df_accuracy.to_csv('accuracy.csv', sep = ';', index = False)
-    
-    print("A acurácia do sistema é de " + str(correct_results) + " em " + str(count_tests) + "(" + str(correct_results/count_tests*(100)) + "%)")
+        # Evaluating model
+        resp_des = []
+        resp_rsa = []
+        resp_elgamal = []
+        
+        count_tests = 0
+        onlyfiles = [f for f in listdir(path1) if isfile(join(path1, f))]
+        for f in onlyfiles:
+            if 'test' in f:
+                count_tests+=1
+        
+        for i in range(0,count_tests):
+            if i<20:
+                resp_des.append(1)
+                resp_rsa.append(0)
+                resp_elgamal.append(0)
+            if i>=20 and i<40:
+                resp_des.append(0)
+                resp_rsa.append(1)
+                resp_elgamal.append(0)
+            if i>=40:
+                resp_des.append(0)
+                resp_rsa.append(0)
+                resp_elgamal.append(1)
+        
+        pred_des, accuracy_des, cm_des = generate_model(dfs, selected_metrics, 'DES', resp_des, train_size)
+        pred_rsa, accuracy_rsa, cm_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa, train_size)
+        pred_elgamal, accuracy_elgamal, cm_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal, train_size)
+        
+        # Committee
+        des_result = []
+        rsa_result = []
+        elgamal_result = []
+        
+        for i in range(0, count_tests):
+            if pred_des[i] + pred_rsa[i] + pred_elgamal[i] <= 1:
+                des_result.append(pred_des[i])
+                rsa_result.append(pred_rsa[i])
+                elgamal_result.append(pred_elgamal[i])
+            else:
+                row = df_committee[df_committee.index == 'test_doc_' + (('0'+str(i+1)) if i+1<10 else str(i+1))].iloc[0]
+                des_dist = compute_average(row, 'DES')
+                rsa_dist = compute_average(row, 'RSA')
+                elgamal_dist = compute_average(row, 'ElGamal')
+
+                dist = float('inf')
+                if pred_des[i] == 1 and des_dist < dist:
+                    dist = des_dist
+                if pred_rsa[i] == 1 and rsa_dist < dist:
+                    dist = rsa_dist
+                if pred_elgamal[i] == 1 and elgamal_dist < dist:
+                    dist = elgamal_dist
+
+                if dist == des_dist:
+                    des_result.append(1)
+                    rsa_result.append(0)
+                    elgamal_result.append(0)
+                elif dist == rsa_dist:
+                    des_result.append(0)
+                    rsa_result.append(1)
+                    elgamal_result.append(0)
+                elif dist == elgamal_dist:
+                    des_result.append(0)
+                    rsa_result.append(0)
+                    elgamal_result.append(1)
+                else:
+                    des_result.append(0)
+                    rsa_result.append(0)
+                    elgamal_result.append(0)
+        
+        classifier_test = []
+        classifier_pred = []
+        # evaluating classifier
+        for i in range(0, count_tests):
+            if resp_des[i] == 1:
+                classifier_test.append(1)
+            elif resp_rsa[i] == 1:
+                classifier_test.append(2)
+            elif resp_elgamal[i] == 1:
+                classifier_test.append(3)
+            else:
+                classifier_test.append(0)
+                
+            if des_result[i] == 1:
+                classifier_pred.append(1)
+            elif rsa_result[i] == 1:
+                classifier_pred.append(2)
+            elif elgamal_result[i] == 1:
+                classifier_pred.append(3)
+            else:
+                classifier_pred.append(0)
+            
+        if len(classifier_test) + len(classifier_pred) != 2 * count_tests:
+            print('Erro no tamanho dos vetores de respota do classificador!!')
+        
+        y_test = classifier_test
+        y_pred = classifier_pred
+        
+        # Making the Confusion Matrix
+        from sklearn.metrics import confusion_matrix, accuracy_score
+        cm_comitee = confusion_matrix(y_test, y_pred)
+        print(cm_comitee)
+        accuracy_comitee = accuracy_score(y_test, y_pred)
+        
+        df_accuracy = pd.read_csv('accuracy.csv', sep = ';')
+        df_accuracy = df_accuracy.append({
+            'selected_metrics': str(selected_metrics),
+            'accuracy_des': accuracy_des,
+            'accuracy_rsa': accuracy_rsa,
+            'accuracy_elgamal': accuracy_elgamal,
+            'accuracy_comitee': accuracy_comitee,
+            'cm_des': str(cm_des),
+            'cm_rsa': str(cm_rsa),
+            'cm_elgamal': str(cm_elgamal),
+            'cm_comitee': str(cm_comitee),
+            'time': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+            'train_size': train_size
+        }, ignore_index = True)
+        df_accuracy.to_csv('accuracy.csv', sep = ';', index = False)
+        

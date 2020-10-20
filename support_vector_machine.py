@@ -25,7 +25,7 @@ def compute_average(row, base):
             qtd += 1
     return s / qtd
 
-def get_dataset(dfs, selected_base, test_resp):
+def get_dataset(dfs, selected_base, test_resp, train_size):
     result = pd.DataFrame()
     for s in dfs:
         # df = df.set_index('Column1')
@@ -38,6 +38,8 @@ def get_dataset(dfs, selected_base, test_resp):
         for i in range(0, df.shape[0]):
             df.iloc[i, i] = 1 if df.iloc[i, i] == 2 else df.iloc[i, i]
         df = df[[c for c in df.columns if selected_base in c]]
+        if train_size != None:
+            df = df[[c for c in df.columns if list(df.columns).index(c) < train_size]]
         df['document'] = df.index
         df['response'] = df['document'].apply(lambda x: 1 if selected_base in x else (test_resp[int(x[(len(x)-2):])-1] if 'test' in x else 0))
         df[s] = df.apply(lambda row: compute_average(row, selected_base), axis = 1)
@@ -50,9 +52,9 @@ def get_dataset(dfs, selected_base, test_resp):
 
 #%%
 
-def generate_model(dfs, selected_metrics, selected_base, test_resp):
+def generate_model(dfs, selected_metrics, selected_base, test_resp, train_size = None):
     # Importing the dataset
-    dataset = get_dataset(dfs, selected_base, test_resp)
+    dataset = get_dataset(dfs, selected_base, test_resp, train_size)
     dataset = dataset[['document', 'response'] + [k + ' - ' + str(v) + ' bits' for k, v in selected_metrics.items()]]
     
     df_train = dataset[dataset['document'].apply(lambda c: 'test' not in c)]
@@ -61,7 +63,7 @@ def generate_model(dfs, selected_metrics, selected_base, test_resp):
     #y = dataset.iloc[:, 1].values
     
     # Splitting the dataset into the Training set and Test set
-    from sklearn.model_selection import train_test_split
+    # from sklearn.model_selection import train_test_split
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
     X_train, X_test = df_train.iloc[:, 2:].values, df_test.iloc[:, 2:].values
     y_train, y_test = df_train.iloc[:, 1].values, df_test.iloc[:, 1].values
