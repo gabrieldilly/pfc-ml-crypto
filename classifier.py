@@ -101,24 +101,25 @@ print("- Escreva no padrão:")
 print("    * Exemplos documentos de treino: RSA_doc_11.txt, DES_doc_13.txt, ElGamal_doc_33.txt;")
 print("    * Exemplos documentos de teste: test_doc_01.txt, test_doc_05.txt, test_doc_33.txt.")
 
-path1 = input()
+#path1 = input()
 path1 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\encrypted_documents"
 
 print("\nInsira o tamanho de palavra a ser usado na geração do espaço de vetores (8, 16, 32 ou 64 bits):")
-B = input()
+#B = input()
+B = 16
 
 print('\nGerando o espaço de palavras...\n')
 
-if int(B)==8 or int(B)==16:
-    vector_space = generate_space_8_16(B, path1)
+#if int(B)==8 or int(B)==16:
+#    vector_space = generate_space_8_16(B, path1)
 
-if int(B)==32 or int(B)==64:
-    vector_space = generate_space_32_64(B, path1)
+#if int(B)==32 or int(B)==64:
+#    vector_space = generate_space_32_64(B, path1)
 
 print('\nPronto! Espaço gerado!\n')
 
 print("\nInsira o caminho de destino para as tabelas de medidas de similaridade e dissimilaridade:")
-path2 = input()
+#path2 = input()
 path2 = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas"
 
 print("\nEscreva o número das medidas que deseja usar (aperte 0 para terminar):\n")
@@ -129,46 +130,51 @@ print("3 - Coeficiente Dice")
 print("4 - Coeficiente Jaccard")
 print("5 - Distância Euclidiana")
 print("6 - Distância Manhattan")
-print("7 - Distância Canberra\n")
 
 selected_metrics = {}
 choice = ''
 metric_list = []
 dfs = {}
 
-while True:
-    choice = input()
-    if choice == '' or int(choice) == 0:
-        break
-    metric_list.append(int(choice))
-    selected_metrics[metric_names[int(choice) - 1]] = B
+# while True:
+#     choice = input()
+#     if choice == '' or int(choice) == 0:
+#         break
+#     metric_list.append(int(choice))
+#     selected_metrics[metric_names[int(choice) - 1]] = B
 
 print('\nCalculando as medidas...\n')
 
 # for m in metric_list:
 #     dfs[metric_names[m - 1] + ' - ' + str(B) + ' bits'] = generate_metric(m, vector_space, B, path1, path2)
 
-metric_path = "C:\\Users\\rafae\\Documents\\IME\\Computação\\PFC\\pfc-ml-crypto\\Medidas\\"
-
 # Euclidian_Distance for committee
-if 5 not in metric_list:
-    #df_committee = generate_metric(5, vector_space, B, path1, path2)
-    df_committee = pd.read_csv(metric_path + 'Euclidian' + ' - ' + str(B) + ' bits.csv', delimiter = ';')
-else:
-    df_committee = dfs['Euclidian - ' + str(B) + ' bits.csv']
-
-for m in metric_list:
-    dfs[metric_names[m - 1] + ' - ' + str(B) + ' bits'] = pd.read_csv(metric_path + metric_names[m - 1] + ' - ' + str(B) + ' bits.csv', delimiter = ';')
+#if 5 not in metric_list:
+#    df_committee = generate_metric(5, vector_space, B, path1, path2)
+#else:
+#    df_committee = dfs['Euclidian - ' + str(B) + ' bits.csv']
 
 print('\nPronto! Medidas calculadas!\n')
 
-# import pickle
+import pickle
 # # Saving the objects:
 # with open('16bits.pkl', 'wb') as f:
 #     pickle.dump([selected_metrics, dfs], f)
 # # Getting back the objects:
-# with open('16bits.pkl', 'rb') as f:
-#     selected_metrics, dfs = pickle.load(f)
+with open('16bits.pkl', 'rb') as f:
+    selected_metrics, dfs = pickle.load(f)
+
+selected_metrics = {
+    'Cosseno': '16',
+    'Simple-Matching': '16',
+    #'Dice': '16',
+    #'Jaccard': '16',
+    'Euclidian': '16'
+    # 'Manhattan': '16',
+    # 'Canberra': '8'
+    }
+
+df_committee = dfs['Euclidian - ' + str(B) + ' bits']
 
 print('\nGerando o modelo...\n')
 
@@ -197,16 +203,6 @@ for i in range(0,count_tests):
         resp_rsa.append(0)
         resp_elgamal.append(1)
 
-#selected_metrics = {
-    #'Cosseno': '8',
-    #'Simple-Matching': '8',
-    # 'Dice': '8',
-    # 'Jaccard': '8',
-    #'Euclidian': '8',
-    # 'Manhattan': '8',
-    # 'Canberra': '8'
-#    }
-
 pred_des = generate_model(dfs, selected_metrics, 'DES', resp_des)
 pred_rsa = generate_model(dfs, selected_metrics, 'RSA', resp_rsa)
 pred_elgamal = generate_model(dfs, selected_metrics, 'ElGamal', resp_elgamal)
@@ -218,27 +214,28 @@ elgamal_result = []
 
 for i in range(0, count_tests):
     if pred_des[i] + pred_rsa[i] + pred_elgamal[i] == 1:
-        des_result[i] = pred_des[i]
-        rsa_result[i] = pred_rsa[i]
-        elgamal_result[i] = pred_elgamal[i]
+        des_result.append(pred_des[i])
+        rsa_result.append(pred_rsa[i])
+        elgamal_result.append(pred_elgamal[i])
     else:
+        row = df_committee[df_committee['document']] == 'test_doc_' + (('0' + str(i+1)) if i<9 else str(i+1)) + '.txt':
         for index, row in df_committee.iterrows():
-            if index == 'test_doc_' + (('0'+str(i+1)) if i<10 else str(i+1)):
+            if index == 
                 des_dist = compute_average(row, 'DES')
                 rsa_dist = compute_average(row, 'RSA')
                 elgamal_dist = compute_average(row, 'ElGamal')
-        if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
-            des_result[i] = 1
-            rsa_result[i] = 0
-            elgamal_result[i] = 0
-        if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
-            des_result[i] = 0
-            rsa_result[i] = 1
-            elgamal_result[i] = 0
-        if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
-            des_result[i] = 0
-            rsa_result[i] = 0
-            elgamal_result[i] = 1
+                if min(des_dist, rsa_dist, elgamal_dist) == des_dist:
+                    des_result.append(1)
+                    rsa_result.append(0)
+                    elgamal_result.append(0)
+                if min(des_dist, rsa_dist, elgamal_dist) == rsa_dist:
+                    des_result.append(0)
+                    rsa_result.append(1)
+                    elgamal_result.append(0)
+                if min(des_dist, rsa_dist, elgamal_dist) == elgamal_dist:
+                    des_result.append(0)
+                    rsa_result.append(0)
+                    elgamal_result.append(1)
 
 correct_results = 0
 
@@ -251,13 +248,13 @@ for i in range(0, count_tests):
     if elgamal_result[i] == 1 and resp_elgamal[i] == 1:
         correct_results+=1
 
-y_pred = des_result + rsa_result + elgamal_result
-y_test = resp_des + resp_rsa + resp_elgamal
+#y_pred = des_result + rsa_result + elgamal_result
+#y_test = resp_des + resp_rsa + resp_elgamal
 
 # Making the Confusion Matrix
-from sklearn.metrics import confusion_matrix, accuracy_score
-cm = confusion_matrix(y_test, y_pred)
-print(cm)
-accuracy_score(y_test, y_pred)
+#from sklearn.metrics import confusion_matrix, accuracy_score
+#cm = confusion_matrix(y_test, y_pred)
+#print(cm)
+#accuracy_score(y_test, y_pred)
 
-print("A acurácia do sistema é de " + str(correct_results) + " em " + str(count_tests) + "(" + str(correct_result/count_tests*(100)) + "%)")
+print("A acurácia do sistema é de " + str(correct_results) + " em " + str(count_tests) + " (" + str(correct_results/count_tests*(100)) + "%)")
