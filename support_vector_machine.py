@@ -95,34 +95,64 @@ def generate_model(dfs, selected_metrics, selected_base, test_resp, train_size =
     print(cm)
     accuracy_score(y_test, y_pred)
 
-    # from matplotlib.colors import ListedColormap
-    # # X_set, y_set = sc.inverse_transform(X_train), y_train
-    # X_set, y_set = sc.inverse_transform(X_test), y_test
-    # print(X_set[:, 0].mean(), X_set[:, 1].mean())
-    # if X_set[:, 0].mean() < 10 and X_set[:, 1].mean() < 10:
-    #     X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.01, stop = X_set[:, 0].max() + 0.01, step = 0.00001),
-    #                          np.arange(start = X_set[:, 1].min() - 0.01, stop = X_set[:, 1].max() + 0.01, step = 0.00001))
-    # elif X_set[:, 0].mean() >= 10 and X_set[:, 1].mean() < 10:
-    #     X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 300, stop = X_set[:, 0].max() + 300, step = 0.25),
-    #                          np.arange(start = X_set[:, 1].min() - 0.01, stop = X_set[:, 1].max() + 0.01, step = 0.00001))
-    # elif X_set[:, 0].mean() < 10 and X_set[:, 1].mean() >= 10:
-    #     X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.01, stop = X_set[:, 0].max() + 0.01, step = 0.00001),
-    #                          np.arange(start = X_set[:, 1].min() - 0, stop = X_set[:, 1].max() + 0, step = 100.25))
-    # elif X_set[:, 0].mean() >= 10 and X_set[:, 1].mean() >= 10:
-    #     X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 300, stop = X_set[:, 0].max() + 300, step = 0.25),
-    #                          np.arange(start = X_set[:, 1].min() - 300, stop = X_set[:, 1].max() + 300, step = 0.25))      
+    from matplotlib.colors import ListedColormap
+    # X_set, y_set = sc.inverse_transform(X_train), y_train
+    X_set, y_set = sc.inverse_transform(X_test), y_test
+    print(X_set[:, 0].mean(), X_set[:, 1].mean())
+    if X_set[:, 0].mean() < 10 and X_set[:, 1].mean() < 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.01, stop = X_set[:, 0].max() + 0.01, step = 0.00001),
+                              np.arange(start = X_set[:, 1].min() - 0.01, stop = X_set[:, 1].max() + 0.01, step = 0.00001))
+    elif X_set[:, 0].mean() >= 10 and X_set[:, 1].mean() < 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 300, stop = X_set[:, 0].max() + 300, step = 100),
+                              np.arange(start = X_set[:, 1].min() - 0.01, stop = X_set[:, 1].max() + 0.01, step = 0.00001))
+    elif X_set[:, 0].mean() < 10 and X_set[:, 1].mean() >= 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.01, stop = X_set[:, 0].max() + 0.01, step = 0.00001),
+                              np.arange(start = X_set[:, 1].min() - 0, stop = X_set[:, 1].max() + 0, step = 100.25))
+    elif X_set[:, 0].mean() >= 10 and X_set[:, 1].mean() >= 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 300, stop = X_set[:, 0].max() + 300, step = 100),
+                              np.arange(start = X_set[:, 1].min() - 300, stop = X_set[:, 1].max() + 300, step = 100))      
         
-    # plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
-    #                 alpha = 0.75, cmap = ListedColormap(('red', 'green')))
-    # plt.xlim(X1.min(), X1.max())
-    # plt.ylim(X2.min(), X2.max())
-    # for i, j in enumerate(np.unique(y_set)):
-    #     plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
-    # plt.title('SVM (Test set)')
-    # plt.xlabel(dataset.columns[2])
-    # plt.ylabel(dataset.columns[3])
-    # plt.legend()
-    # plt.show()
+    plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+                    alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+    plt.xlim(X1.min(), X1.max())
+    plt.ylim(X2.min(), X2.max())
+    for i, j in enumerate(np.unique(y_set)):
+        plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+    plt.title('SVM (Base de Teste)')
+    plt.xlabel(dataset.columns[2])
+    plt.ylabel(dataset.columns[3])
+    plt.legend()
+    plt.show()
+    
+    
+    X_set, y_set = sc.inverse_transform(X_train), y_train
+    # X_set, y_set = sc.inverse_transform(X_test), y_test
+    print(X_set[:, 0].mean(), X_set[:, 1].mean())
+    if X_set[:, 0].mean() < 10 and X_set[:, 1].mean() < 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.01, stop = X_set[:, 0].max() + 0.01, step = 0.0001),
+                              np.arange(start = X_set[:, 1].min() - 0.01, stop = X_set[:, 1].max() + 0.01, step = 0.0001))
+    elif X_set[:, 0].mean() >= 10 and X_set[:, 1].mean() < 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 300, stop = X_set[:, 0].max() + 300, step = 100),
+                              np.arange(start = X_set[:, 1].min() - 0.01, stop = X_set[:, 1].max() + 0.01, step = 0.0001))
+    elif X_set[:, 0].mean() < 10 and X_set[:, 1].mean() >= 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 0.01, stop = X_set[:, 0].max() + 0.01, step = 0.0001),
+                              np.arange(start = X_set[:, 1].min() - 0, stop = X_set[:, 1].max() + 0, step = 100))
+    elif X_set[:, 0].mean() >= 10 and X_set[:, 1].mean() >= 10:
+        X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 300, stop = X_set[:, 0].max() + 300, step = 100),
+                              np.arange(start = X_set[:, 1].min() - 300, stop = X_set[:, 1].max() + 300, step = 100))      
+        
+    plt.contourf(X1, X2, classifier.predict(sc.transform(np.array([X1.ravel(), X2.ravel()]).T)).reshape(X1.shape),
+                    alpha = 0.75, cmap = ListedColormap(('red', 'green')))
+    plt.xlim(X1.min(), X1.max())
+    plt.ylim(X2.min(), X2.max())
+    for i, j in enumerate(np.unique(y_set)):
+        plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1], c = ListedColormap(('red', 'green'))(i), label = j)
+    plt.title('SVM (Base de Treino)')
+    plt.xlabel(dataset.columns[2])
+    plt.ylabel(dataset.columns[3])
+    plt.legend()
+    plt.show()
+    
 
     return y_pred, accuracy_score(y_test, y_pred), cm
 
