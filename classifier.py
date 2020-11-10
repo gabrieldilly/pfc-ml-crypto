@@ -143,6 +143,9 @@ while True:
         break
     metric_list.append(int(choice))
     selected_metrics[metric_names[int(choice) - 1]] = B
+if 5 not in metric_list:
+    metric_list.append(5)
+    selected_metrics[metric_names[4]] = B
 
 print('\nCalculando as medidas...\n')
 
@@ -184,7 +187,6 @@ df_committee = format_df(df_committee)
 # SVM model
 print('\nGerando o modelo...\n')
 
-all_
 pairs = [
     {
         'Cosseno': B,
